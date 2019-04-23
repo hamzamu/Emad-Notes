@@ -7,13 +7,14 @@ import store from './store'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
+// DB
+import db from './datastore'
+// import db from './ldb'
+Vue.prototype.$db = db
 Vue.use(ElementUI)
-
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
-
 /* eslint-disable no-new */
 new Vue({
   components: { App },
