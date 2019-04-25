@@ -1,10 +1,12 @@
 <template>
   <el-container style="height:100vh; border: 0px solid #eee;padding:0;margin:0;" id="app">
     <el-aside width="65px">
-      <el-menu style="height:100vh;background-color: rgba(255,255,245,.5);" class="sidebar">
+      <el-menu style="height:100vh;background-color: rgba(128,128,128,.02);" class="sidebar">
+        <el-menu-item index="1" @click="$router.push('/editor')">
+          <i class="el-icon-plus"></i>
+        </el-menu-item>        
         <el-menu-item index="1" @click="$router.push('/')">
           <i class="el-icon-tickets"></i>
-          <!-- <span>Notes</span> -->
         </el-menu-item>
         <el-menu-item index="2" @click="$router.push('tags')">
           <i class="el-icon-news"></i>
@@ -31,14 +33,8 @@
         <i class="el-icon-caret-bottom sysButton" @click="fullScreen(false)"></i>
         <i class="el-icon-close sysButton" @click="close()"></i>
       </div>
-      <el-header style="text-align: right; font-size: 12px; padding:0px 0px 0 0;" class="is-hidden">
-
-        <i class="el-icon-caret-top" @click="fullScreen(true)"></i>
-        <i class="el-icon-caret-bottom" @click="fullScreen(false)"></i>
-        <i class="el-icon-close" @click="close()"></i>
-
-      </el-header>
       <el-main style="padding:0;margin:0px;">
+        <!-- {{$configs}} -->
         <router-view></router-view>
       </el-main>
       <el-footer style="padding:5px;">

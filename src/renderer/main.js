@@ -9,8 +9,11 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // DB
 import db from './datastore'
+import configs from './configs.js'
 // import db from './ldb'
 Vue.prototype.$db = db
+Vue.prototype.$note = null
+Vue.prototype.$configs = configs
 Vue.use(ElementUI)
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
