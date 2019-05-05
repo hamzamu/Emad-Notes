@@ -1,15 +1,18 @@
 <template>
-    <div style="padding:0;">
-        <el-row :gutter="12" style="padding:0;">
+    <div>
+        <el-row :gutter="12">
+            <!-- {{notes}} -->
             <el-col :span="24" v-for="(i,index) in notes" v-bind:key="index">
-                <el-card shadow="hoverx" class="is-sharp">
+                <div v-if="count == '0'">No Posts</div>
+                <el-card  class="is-sharp">
                     <div style="float:right;text-align:center;width:100px;padding:5px 0 5px 0;">
                         <small>Status: xdraft</small> <br />
                         <el-progress style="margin-top:10px;" color="#8e71c7" :show-text="false" :text-inside="false"
                             :stroke-width="10" :percentage="43">
                         </el-progress>
                     </div>
-                    <a @click="setNote(i._id)">{{i.name}}</a>
+                    <a @click="setNote(i._id)">{{i.title}}</a>
+                    <!-- <p>{{i.content}}</p> -->
                     <!-- <router-link to="editor" style="text-decoration:none;">{{i.name}}</router-link> <br /> -->
                     <small @click="setNote(i._id)">{{i.date}}</small>
                 </el-card>
@@ -20,12 +23,16 @@
 <style scoped>
     .is-sharp {
         border-radius: 0px;
+        margin:0px !important;
+        border:0px auto;
+        box-shadow:none;
     }
 </style>
 <script>
     export default {
         data() {
             return {
+                count: 1,
                 notes: null
             }
         },
@@ -38,15 +45,18 @@
             }
         },
         created() {
-            this.$db.insert({
-                name: "fender jazz bass",
-                date: 1977
-            })
+
+// this.$db.remove({}, { multi: true }, function (err, numRemoved) {
+// });
+
         },
         mounted() {
             var self = this
             this.$db.find({}, function (err, docs) {
-                self.notes = docs
+                self.notes = docs;
+                if(docs.length == 0){
+                    self.count = 0
+                }
             })
         }
     }

@@ -1,6 +1,11 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  Tray,
+  Menu
+} from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -11,11 +16,12 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+let mainTray
+const winURL = process.env.NODE_ENV === 'development' ?
+  `http://localhost:9080` :
+  `file://${__dirname}/index.html`
 
-function createWindow () {
+function createWindow() {
   /**
    * Initial window options
    */
@@ -31,7 +37,23 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  // mainTray = new Tray(require('path').join(__static, '/icons/note.png'))
+  // mainTray.setToolTip('XXX')
+  // mainTray.on('click', () => {
+  //   mainWindow.show()
+  // })
+
+
 }
+
+
+
+
+app.on('ready', function () {
+
+})
+
 
 app.on('ready', createWindow)
 

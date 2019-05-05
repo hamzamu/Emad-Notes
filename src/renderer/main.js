@@ -10,6 +10,12 @@ import 'element-ui/lib/theme-chalk/index.css'
 // DB
 import db from './datastore'
 import configs from './configs.js'
+
+
+import contenteditable from 'vue-contenteditable'
+Vue.use(contenteditable)
+
+
 // import db from './ldb'
 Vue.prototype.$db = db
 Vue.prototype.$note = null

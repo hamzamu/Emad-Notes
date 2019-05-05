@@ -68,10 +68,10 @@
       }
     },
     created() {
-      this.$db.insert({
-        name: "fender jazz bass",
-        year: 1977
-      })
+      // this.$db.insert({
+      //   name: "fender jazz bass",
+      //   year: 1977
+      // })
     },
     mounted() {
       // this.test = JSON.parse(this.$db)
