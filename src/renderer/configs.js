@@ -9,6 +9,7 @@ configs.set = (key,v)=>{
 }
 
 
+
 // configs.set('s','w')
 export default {
    configs: configs,

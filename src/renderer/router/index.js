@@ -32,7 +32,7 @@ export default new Router({
     },
     {
       path: '/tags',
-      name: 'search',
+      name: 'tags',
       component: require('@/components/tags').default
     },
     {

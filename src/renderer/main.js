@@ -15,6 +15,15 @@ import configs from './configs.js'
 import contenteditable from 'vue-contenteditable'
 Vue.use(contenteditable)
 
+import VueMousetrap from 'vue-mousetrap'
+Vue.use(VueMousetrap)
+
+// Countable
+import VueCountable from 'vue-countable'
+Vue.component('vue-countable', VueCountable)
+
+
+Vue.use(require('vue-moment'));
 
 // import db from './ldb'
 Vue.prototype.$db = db

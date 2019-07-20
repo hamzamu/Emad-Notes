@@ -29,7 +29,9 @@ function createWindow() {
     useContentSize: true,
     width: 1190,
     height: 730,
-    frame: false
+    frame: true,
+    title:'Emad',
+    resizable: false
   })
 
   mainWindow.loadURL(winURL)
