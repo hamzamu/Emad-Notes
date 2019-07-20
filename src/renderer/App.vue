@@ -205,7 +205,7 @@
               content: self.input,
               createdAt: new Date(),
               updatedAt: new Date(),
-              tags: tags
+              tags: tags || []
             }, function (err, newDoc) {
               App.setTags(tags, newDoc._id)
               App.metaSet(self.input, newDoc._id)
