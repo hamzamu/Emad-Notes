@@ -53,7 +53,7 @@
         <!-- {{$configs}} -->
         <router-view :config="config" :docs="docs" :input="input"></router-view>
       </el-main>
-      <el-footer id="commands" style="padding:5px;border-top:1px solid #ccc;">
+      <el-footer id="commands" style="padding:5px;border-top:1px solid #ccc;background:#fff;">
         <el-input placeholder="Commands" ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
           @keyup.esc.native="clearInput()" @keyup="input = $event.target.value;" @keyup.enter.native="submitNote()"
           v-model="input" style="width:100%;">
@@ -118,7 +118,7 @@
         var self = this;
         // Editor
         var cmd = App.commandParse(this.input)
-        if(cmd && cmd.command){
+        if (cmd && cmd.command) {
           return
         }
         if (this.$configs.get('id') && this.input) {
@@ -142,12 +142,12 @@
         if (!this.$configs.get('id')) {
           return
         }
-        if(!data.length || !data[0] || !data[1]) return;
+        if (!data.length || !data[0] || !data[1]) return;
         this.$db.update({
           _id: this.$configs.get('id')
         }, {
           $set: {
-            ["props." + data[0]] : data[1],
+            ["props." + data[0]]: data[1],
             updatedAt: new Date()
           }
         }, function () {});
@@ -157,10 +157,41 @@
       get(data) {
         // cat/ progress/ status
       },
+      cat(options) {
+        var self = this;
+        // => if is ID
+        var input = this.input;
+        var input = input.replace(/#[a-zA-Z]+/, "").trim().split(" ")
+        if (!input[1]) {
+          this.$message('Please at the post tags: #cat set tag1,tag2,tag');
+          return;
+        }
+        // SET
+        var tags = input[1].split(",")
+        if (this.$configs.get('id'), tags.length,input[0] === 'set') {
+          this.$db.update({ _id: this.$configs.get('id') }, { $addToSet: { cats: {  $each: tags } } }, {}, function () {});   
+          EventBus.$emit('updateEditor', '');
+        }
+        // GET
+        if (input[0] == 'get' &&  tags.length) {
+          this.$db.find({
+            cats: {
+              $in: tags
+            }
+          }, function (err, docs) {
+            console.log('docs',docs)
+            var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
+            self.docs = docs; 
+          });
+        }
+
+      },
       checkTag(e) {
         var tag = this.tags[0];
+        if (!tag) return;
         this.input = tag + ' ';
         this.tags = '';
+
       },
       close() {
         let w = remote.getCurrentWindow()
@@ -183,18 +214,7 @@
           // IF ID 
           var tags = App.getTags(this.input)
           if (id) {
-            // Update The Note
-            self.$db.update({
-              _id: this.id
-            }, {
-              $set: {
-                updatedAt: new Date()
-              },
-              $push: {
-                rows: self.input,
-              }
-            }, function () {});
-            App.setTags(tags, this.$configs.get('id'))
+            //App.setTags(tags, this.$configs.get('id'))
             App.metaSet(self.input, this.$configs.get('id'))
             EventBus.$emit('updateEditor', '');
             this.input = ''
@@ -207,7 +227,7 @@
               updatedAt: new Date(),
               tags: tags || []
             }, function (err, newDoc) {
-              App.setTags(tags, newDoc._id)
+              // App.setTags(tags, newDoc._id)
               App.metaSet(self.input, newDoc._id)
               self.id = newDoc._id
             });
@@ -261,7 +281,7 @@
             self.docs = docs;
           }
         })
-      },
+      }
     },
     created() {},
     mounted() {
@@ -354,7 +374,7 @@
 
   /*  */
   .meta-editor {
-    width: 30%;
+    width: 35%;
     display: block;
     /* height: auto; */
     height: 100vh;
@@ -373,7 +393,7 @@
   .meta-container {
     padding: 10px !important;
     padding-bottom: 100px !important;
-    width: 97%;
+    width: 95%;
     margin: 0px auto;
     height: auto;
     overflow-y: scroll !important;
@@ -418,5 +438,8 @@
     width: 48%;
     text-align: right;
     float: right;
+  }
+  .small{
+    font-size:12px !important;
   }
 </style>

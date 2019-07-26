@@ -9,7 +9,7 @@ app.tags = ['me', 'today', 'todo', 'tasks', 'project', 'media', 'quote', 'note',
 // app.commands = ['get', 'set', 'put', 'search', 'bot', 'log', 'se', 'tag', 'tags', 'reset'];
 app.cols = ['left', 'right', 'center'];
 app.args = ['=', '-', '@', '$'];
-app.commands = ['find','fetch', 'set','get']
+app.commands = ['find','fetch', 'set','get','cat']
 /*
 */
 app.view = function (page) {
@@ -39,17 +39,10 @@ app.metaSet = (data,id)=>{
     db.update({ _id: id }, { $push: { meta: {  $each: r } } }, {}, function () {});
 }
 /*
+Does not work
 */
-app.setTags = (tags,id)=>{
-    db.update({ _id: id }, { $addToSet: { tags: {  $each: tags } } }, {}, function () {});
-    db.findOne({ _id: id }, function (err, doc) {
-    });
-    // FOR TESTING
-    // db.find({_id : id }, function (err, docs) {
-    //     console.log(docs)
-    //     // docs is an array containing documents Mars, Earth, Jupiter
-    //     // If no document is found, docs is equal to []
-    //   });      
+app.tagsSet = (cats,id)=>{
+    db.update({ _id: id }, { $addToSet: { cats: {  $each: cats } } }, {}, function () {});    
 }
 
 
