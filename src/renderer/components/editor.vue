@@ -107,7 +107,6 @@
                 tags: '',
                 meta: '',
                 att: '',
-                rows: '',
                 isEditable: true,
                 bg: 'static/images/lined-paper-2.png',
                 count: '',

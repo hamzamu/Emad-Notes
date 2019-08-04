@@ -24,12 +24,16 @@ app.getTags = (input)=>{
     var tags = value.match(/#[a-zA-Z]+/gi);
     return tags
 }
-app.getURL = (text)=>{
+/*
+    Extract URL(s)
+*/
+app.getURL = (str)=>{
 }
 /*
     Setting up tags
 */
 app.metaSet = (data,id)=>{
+    if(!id || !data) return;
     var tags = app.getTags(data)
     var text = data.replace(/#[a-zA-Z]+/, "");
     var r = []
@@ -41,7 +45,15 @@ app.metaSet = (data,id)=>{
 /*
 Does not work
 */
+
+app.setTags = (cats,id)=>{
+    if(!id || !cats) return;
+    db.update({ _id: id }, { $addToSet: { tags: {  $each: cats } } }, {}, function () {});    
+}
+
+
 app.tagsSet = (cats,id)=>{
+    if(!id || !cat) return;
     db.update({ _id: id }, { $addToSet: { cats: {  $each: cats } } }, {}, function () {});    
 }
 
@@ -63,7 +75,6 @@ app.commandParse = (str)=>{
         var param = str.replace(/#[a-zA-Z]+/, "").trim() || null;
         return {command:isCommand[0],param:param}
     }
-
 }
 
 app.find = (option)=>{

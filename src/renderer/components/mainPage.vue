@@ -4,9 +4,9 @@
             <div v-if="count == ''">No Posts {{count}}</div>
             <el-col :span="24" v-for="(i,index) in docs" v-bind:key="index">
                 <el-card class="is-sharp" shadow="never">
-                    <span class="float:right;">
+                    <!-- <span class="float:right;">
                         <el-switch v-model="i.selected" @click.native="selected = i._id"></el-switch>
-                    </span>
+                    </span> -->
                     <!--  -->
                     <div style="float:right;text-align:center;width:220px;padding:5px 0 5px 0;">
                         <el-button @click="remove(i._id)" icon="el-icon-edit" type="success" circle></el-button>

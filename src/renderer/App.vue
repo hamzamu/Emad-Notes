@@ -168,20 +168,28 @@
         }
         // SET
         var tags = input[1].split(",")
-        if (this.$configs.get('id'), tags.length,input[0] === 'set') {
-          this.$db.update({ _id: this.$configs.get('id') }, { $addToSet: { cats: {  $each: tags } } }, {}, function () {});   
+        if (this.$configs.get('id'), tags.length, input[0] === 'set') {
+          this.$db.update({
+            _id: this.$configs.get('id')
+          }, {
+            $addToSet: {
+              cats: {
+                $each: tags
+              }
+            }
+          }, {}, function () {});
           EventBus.$emit('updateEditor', '');
         }
         // GET
-        if (input[0] == 'get' &&  tags.length) {
+        if (input[0] == 'get' && tags.length) {
           this.$db.find({
             cats: {
               $in: tags
             }
           }, function (err, docs) {
-            console.log('docs',docs)
+            console.log('docs', docs)
             var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
-            self.docs = docs; 
+            self.docs = docs;
           });
         }
 
@@ -214,7 +222,7 @@
           // IF ID 
           var tags = App.getTags(this.input)
           if (id) {
-            //App.setTags(tags, this.$configs.get('id'))
+            App.setTags(tags, this.$configs.get('id'))
             App.metaSet(self.input, this.$configs.get('id'))
             EventBus.$emit('updateEditor', '');
             this.input = ''
@@ -227,7 +235,7 @@
               updatedAt: new Date(),
               tags: tags || []
             }, function (err, newDoc) {
-              // App.setTags(tags, newDoc._id)
+              App.setTags(tags, newDoc._id)
               App.metaSet(self.input, newDoc._id)
               self.id = newDoc._id
             });
@@ -314,6 +322,16 @@
   }
 </script>
 <style>
+  html {
+    overflow: scroll;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+    /* make scrollbar transparent */
+  }
+
   body {
     padding: 0;
     margin: 0;
@@ -439,7 +457,8 @@
     text-align: right;
     float: right;
   }
-  .small{
-    font-size:12px !important;
+
+  .small {
+    font-size: 12px !important;
   }
 </style>
