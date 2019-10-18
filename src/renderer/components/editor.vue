@@ -18,29 +18,30 @@
                 <!-- {{tags}} -->
                 <div class="meta-container">
                     <!-- {{note}} -->
-                    <!--  -->
-                    <el-button circle icon="el-icon-edit" @click.native="editor = !editor"></el-button>
+                    <!-- <el-button circle icon="el-icon-edit" @click.native="editor = !editor"></el-button> -->
+                    
 
-                    <div class="box-card" v-if='!props && !tags'>
+                    <div class="box-cardx" v-if='!props && !tags'>
                         <p>
                             There is notes, categories, or metas for this document. <br />
                             Please add some.
                         </p>
                     </div>
 
-                    <el-card class="" v-if='props'>
-                        <div class="box-card" v-for="(value, name) in props" v-bind:key="name">
+                    <div class="" v-if='props'>
+                        <h4>Meta</h4>
+                        <div class="box-cardx" v-for="(value, name) in props" v-bind:key="name">
                             {{name}} : {{value}}
                         </div>
-                    </el-card>
+                    </div>
                     <!--  -->
                     <div class="tag-group" v-if="tags">
-                        <p>Notes browser</p>
+                        <p>Notes</p>
                         <el-tag v-for="(i,index) in tags" v-bind:key="index" type="success">{{i}}</el-tag>
                     </div>
                     <br />
                     <div class="tag-group" v-if="tags">
-                        <el-card v-for="(tag,index) in tags" v-bind:key="index">
+                        <div v-for="(tag,index) in tags" v-bind:key="index">
                             <el-tag>{{tag}}</el-tag><br />
                             <ul class="notes">
                                 <li v-for="(i,index) in rdr(tag)" v-bind:key="index">
@@ -51,7 +52,7 @@
                                 </li>
                             </ul>
 
-                        </el-card>
+                        </div>
 
                     </div>
                 </div>
@@ -167,6 +168,7 @@
                         }
                         self.att = doc.meta;
                         self.note = doc;
+                        console.log(self.props)
                     });
                 }
             },

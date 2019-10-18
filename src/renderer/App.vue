@@ -274,7 +274,9 @@
           self.input = ''
         })
       },
-      // Commands
+     /**
+      * Search Docs
+      * */
       find(option) {
         var self = this;
         var regex = new RegExp(option, 'i');
@@ -300,21 +302,41 @@
       // 
       this.$mousetrap.bind(['command+k', 'ctrl+k'], this.logIt);
       this.$mousetrap.bind(['ctrl+f', 'command+f'], this.focus)
+      /**
+       * 
+       * Focus Commands
+       * 
+       * */
       this.$mousetrap.bind(['ctrl+e', 'command+e'], function () {
         self.$refs.commands.blur()
       })
+      /**
+       * Main Editor
+       * */      
       this.$mousetrap.bind(['command+n', 'ctrl+n'], function (e) {
         self.setView('editor')
       })
+      /**
+       * Main View
+       * */
       this.$mousetrap.bind(['command+l', 'ctrl+l'], function (e) {
         self.setView('/')
       })
+      /**
+       * Sidebar 
+        */
       this.$mousetrap.bind(['ctrl+i', 'command+i'], function (e) {
         self.toggle('isSideOpen')
       })
+      /**
+       * Toggle Logger* WIP
+       * */
       this.$mousetrap.bind(['ctrl+m'], function (e) {
         self.toggle('isMetaOpen')
       });
+      /**
+       * Toggle Search results
+       * */
       this.$mousetrap.bind(['ctrl+;', 'command+;'], function (e) {
         EventBus.$emit('toggle-meta', '');
       })
