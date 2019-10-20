@@ -8,18 +8,22 @@
                         <el-switch v-model="i.selected" @click.native="selected = i._id"></el-switch>
                     </span> -->
                     <!--  -->
-                    <div style="float:right;text-align:center;width:220px;padding:5px 0 5px 0;">
-                        <el-button @click="remove(i._id)" icon="el-icon-edit" type="success" circle></el-button>
-                        <el-button @click="remove(i._id)" icon="el-icon-check" type="primary" circle></el-button>
+                    <!-- Actions WIP -->
+                    <div style="float:right;text-align:center;width:120px;padding:0px 0 5px 0;">
+                        <!-- <el-button @click="remove(i._id)" icon="el-icon-edit" type="success" circle></el-button> -->
+                        <el-button @click="pin(i._id,i.pinned)" icon="el-icon-check" type="primary" circle></el-button>
                         <el-button @click="remove(i._id)" icon="el-icon-delete" type="danger" circle></el-button>
                     </div>
-                    <div style="float:right;text-align:center;width:120px;padding:5px 0 5px 0;">
+                    <!-- <div style="float:right;text-align:center;width:120px;padding:5px 0 5px 0;">
                         <small>Status: draft</small> <br />
                         <el-progress style="margin-top:10px;" color="#8e71c7" :show-text="false" :text-inside="false"
                             :stroke-width="10" :percentage="43">
                         </el-progress>
-                    </div>
-                    <a @click="setNote(i._id)">{{i.title}}</a><br />
+                    </div> -->
+                    <!--  -->
+                    <i class="el-icon-star-on" v-show="i.pinned"></i>
+                    <a @click="setNote(i._id)">{{i.title}}</a><br />                   
+                    
                     <!-- <p>{{i.content}}</p> -->
 
                     <!-- <router-link to="editor" style="text-decoration:none;">{{i.name}}</router-link> <br /> -->
@@ -58,15 +62,15 @@
         computed: {},
         methods: {
             fetch() {
-                // var self = this
-                // this.$db.find({}, function (err, docs) {
-                //     if (docs.length > 0) {
-                //         self.count = docs.length
-                //     }
-                //     var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
-                //     //self.notes = docs;
-                //     self.docs = docs;
-                // })
+                var self = this
+                this.$db.find({}, function (err, docs) {
+                    if (docs.length > 0) {
+                        self.count = docs.length
+                    }
+                    var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
+                    //self.notes = docs;
+                    self.docs = docs;
+                })
             },
             remove(id) {
                 this.$db.remove({
@@ -74,8 +78,12 @@
                 }, function (err) {});
                 this.fetch()
             },
-            archive() {
-
+            pin(id,v) {
+               var v = (v) ? false : true;
+                this.$db.update({
+                    _id: id
+                },{$set: {pinned:v}}, function (err) {});
+                this.fetch()
             },
             setNote(id) {
                 this.$configs.set('id', id)

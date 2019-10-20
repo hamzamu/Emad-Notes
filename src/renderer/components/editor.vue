@@ -6,10 +6,6 @@
                 <el-tag size="small"><b>Sentences:</b>{{count.sentences}}</el-tag>
                 <el-tag size="small"><b>Paragraphs:</b> {{count.paragraphs}}</el-tag>
                 <el-tag size="small"><b>Caracters:</b> {{count.characters}}</el-tag>
-                <el-tag size="small" type='info' v-if="meta.createdAt"><i class="el-icon-watch"></i> <span
-                        class="small"> {{ meta.createdAt | moment("from", "now") }}</span></el-tag>
-                <el-tag size="small" type='success' v-if="meta.updatedAt"><i class="el-icon-circle-check"></i> <span
-                        class="small">{{ meta.updatedAt | moment("from", "now") }}</span></el-tag>
             </div>
         </div>
         <!--  -->
@@ -19,24 +15,48 @@
                 <div class="meta-container">
                     <!-- {{note}} -->
                     <!-- <el-button circle icon="el-icon-edit" @click.native="editor = !editor"></el-button> -->
-                    
-
+                    <el-tag size="small" type='info' v-if="meta.createdAt"><i class="el-icon-watch"></i> <span
+                            class="small"> {{ meta.createdAt | moment("from", "now") }}</span></el-tag>
+                    <el-tag size="small" type='success' v-if="meta.updatedAt"><i class="el-icon-circle-check"></i> <span
+                            class="small">{{ meta.updatedAt | moment("from", "now") }}</span></el-tag>
                     <div class="box-cardx" v-if='!props && !tags'>
                         <p>
-                            There is notes, categories, or metas for this document. <br />
-                            Please add some.
+                            There is notes, categories, or metas for this document. <br /> Please add some.
                         </p>
                     </div>
-
+                    <!--  -->
+                    <!-- Layout-->
+                    <div class="tag-groupx" v-if='layout'>
+                        <h4>Layout</h4>
+                        <div v-for="(value, index) in layout" v-bind:key="index" size="small" type='info'>
+                            <el-button circle icon="el-icon-edit" size="mini"
+                                @click="editLayout = true ; editingLayout = value; oldLayout = value">
+                            </el-button>
+                            {{value}}
+                        </div><br />
+                        <hr />
+                    </div>
+                    <!--  -->
+                    <!-- Tags/Cats -->
+                    <div class="tag-group" v-if='cats'>
+                        <h4>Tags</h4>
+                        <el-tag v-for="(value, index) in cats" v-bind:key="index" size="small" type='info'>{{value}}
+                        </el-tag>
+                        <hr />
+                    </div>
+                    <!--  -->
+                    <!--  -->
                     <div class="" v-if='props'>
                         <h4>Meta</h4>
                         <div class="box-cardx" v-for="(value, name) in props" v-bind:key="name">
-                            {{name}} : {{value}}
+                            <span>{{name}}</span> : {{value}}
                         </div>
+                        <hr />
                     </div>
                     <!--  -->
+                    <!-- Notes -->
                     <div class="tag-group" v-if="tags">
-                        <p>Notes</p>
+                        <h4>Notes</h4>
                         <el-tag v-for="(i,index) in tags" v-bind:key="index" type="success">{{i}}</el-tag>
                     </div>
                     <br />
@@ -46,15 +66,17 @@
                             <ul class="notes">
                                 <li v-for="(i,index) in rdr(tag)" v-bind:key="index">
                                     <el-button circle icon="el-icon-edit" size="mini"
-                                        @click="editNote = true ; sideNoteData.text = i.text; sideNoteData.tag = tag"></el-button>
-                                        
+                                        @click="editNote = true ; sideNoteData.text = i.text; sideNoteData.tag = tag">
+                                    </el-button>
                                     {{i.text}}
                                 </li>
                             </ul>
-
                         </div>
-
                     </div>
+                    <!--  -->
+                    <!-- Layouts -->
+                    <!--  -->
+                    <!--  -->
                 </div>
             </div>
             <!--  -->
@@ -68,19 +90,40 @@
             </div>
         </div>
         <!--  -->
-        <!--  -->
+        <!-- Edit Note  -->
         <el-dialog title="Edit side note" :visible.sync="editNote" width="40%">
-            <p>                
+            <p>
                 {{sideNoteData.text}}
                 <el-input placeholder="Search tags" ref="tags" v-model="sideNote" style="width:100%;"></el-input>
             </p>
             <div>
             </div>
+            <!--  -->
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editNote = false ; editSideNote()" style="float:left;" icon="el-icon-delete" type="danger">
+                <el-button @click="editNote = false ; editSideNote()" style="float:left;" icon="el-icon-delete"
+                    type="danger">
                 </el-button>
                 <el-button @click="editNote = false">Cancel</el-button>
                 <el-button type="primary" @click="editNote = false ; editSideNote()" icon="el-icon-edit"></el-button>
+            </span>
+        </el-dialog>
+        <!--  -->
+        <!-- Edit Layout -->
+        <el-dialog title="Edit Layout" :visible.sync="editLayout" width="40%">
+            <p>
+                {{sideNoteData.value}}
+                <el-input placeholder="New Layout" ref="tags" v-model="editingLayout" style="width:100%;"></el-input>
+            </p>
+            <div>
+            </div>
+            <!--  -->
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editLayout = false ; editLayoutAction()" style="float:left;" icon="el-icon-delete"
+                    type="danger">
+                </el-button>
+                <el-button @click="editLayout = false">Cancel</el-button>
+                <el-button type="primary" @click="editLayout = false ; editLayoutAction()" icon="el-icon-edit">
+                </el-button>
             </span>
         </el-dialog>
 
@@ -106,6 +149,8 @@
                 preview: '',
                 content: '',
                 tags: '',
+                cats: "",
+                layout: "",
                 meta: '',
                 att: '',
                 isEditable: true,
@@ -116,7 +161,10 @@
                 editor: true,
                 editNote: false,
                 sideNote: '',
-                sideNoteData: {}
+                sideNoteData: {},
+                editLayout: false,
+                editingLayout: "",
+                oldLayout: ""
             }
         },
         watch: {
@@ -133,13 +181,41 @@
         },
         methods: {
             editSideNote() {
-                var data = {'$pull':{'meta':{text:this.sideNoteData.text}}}
-                if(this.sideNote){
-                    data["$addToSet"] = { meta: { name: this.sideNoteData.tag, text:this.sideNote } } 
+                var data = {
+                    '$pull': {
+                        'meta': {
+                            text: this.sideNoteData.text
+                        }
+                    }
+                }
+                if (this.sideNote) {
+                    data["$addToSet"] = {
+                        meta: {
+                            name: this.sideNoteData.tag,
+                            text: this.sideNote
+                        }
+                    }
                 }
                 this.$db.update({
                     _id: this.id
-                }, data , function () {});
+                }, data, function () {});
+                this.sideNote = '';
+                this.fetch();
+            },
+            editLayoutAction() {
+                var data = {
+                    '$pull': {
+                        'layout': this.oldLayout
+                    }
+                }
+                // if (this.sideNote) {
+                data["$push"] = {
+                    layout: this.editingLayout
+                }
+                // }
+                this.$db.update({
+                    _id: this.id
+                }, data, function () {});
                 this.sideNote = '';
                 this.fetch();
             },
@@ -166,9 +242,10 @@
                             createdAt: doc.createdAt,
                             updatedAt: doc.updatedAt
                         }
+                        self.cats = doc.cats;
                         self.att = doc.meta;
+                        self.layout = doc.layout;
                         self.note = doc;
-                        console.log(self.props)
                     });
                 }
             },
@@ -223,6 +300,8 @@
         position: relative;
         background: #fff;
         min-height: 100vh;
+        overflow-y: hidden;
+        overflow-x: hidden;
         /* background-image: url("https://transparenttextures.com/patterns/graphy-dark.png"); */
     }
 
@@ -234,12 +313,14 @@
         color: #323232;
         font-size: 15px;
         border: 0px solid #ddd;
+        overflow-y: hidden;
+        overflow-x: hidden;
     }
 
     .editorContent {
         padding: 20px;
         width: 100%;
-        displat: block;
+        display: block;
         border: none;
         outline: none;
         white-space: pre;

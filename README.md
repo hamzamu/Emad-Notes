@@ -43,11 +43,26 @@ Search Docs
 #find {keyword}
 
 
+____________________
+
+Set Document Tag 
+
+Command (editor)
+
+#tag set tag1,tag2,tag2 
+
+[db:cats]
 
 
+_______________________________
 
+Shortcuts
 
-
+ctrl+f/ cmd+f => focus Command input
+ctrl+i/ cmd+i => toggle sidebar
+ctrl+;/ cmd+; => toggle meta editor
+ctrl+n/ cmd+n => new note 
+ctrl+] / cmd+] => lists view
 
 
 

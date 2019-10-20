@@ -9,7 +9,7 @@ app.tags = ['me', 'today', 'todo', 'tasks', 'project', 'media', 'quote', 'note',
 // app.commands = ['get', 'set', 'put', 'search', 'bot', 'log', 'se', 'tag', 'tags', 'reset'];
 app.cols = ['left', 'right', 'center'];
 app.args = ['=', '-', '@', '$'];
-app.commands = ['find','fetch', 'set','get','cat']
+app.commands = ['find','fetch', 'set','get','tag', 'layout']
 /*
 */
 app.view = function (page) {

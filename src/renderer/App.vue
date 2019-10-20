@@ -14,9 +14,9 @@
         <!-- <el-menu-item index="3" @click="$router.push('search')">
           <i class="el-icon-search"></i>
         </el-menu-item> -->
-        <el-menu-item index="3" @click="$router.push('settings')">
+        <!-- <el-menu-item index="3" @click="$router.push('settings')">
           <i class="el-icon-setting"></i>
-        </el-menu-item>
+        </el-menu-item> -->
         <!-- toggle -->
         <el-menu-item index="3" @click="isSideOpen = !isSideOpen" class="is-hiddenx">
           <i class="el-icon-back"></i>
@@ -54,7 +54,7 @@
         <router-view :config="config" :docs="docs" :input="input"></router-view>
       </el-main>
       <el-footer id="commands" style="padding:5px;border-top:1px solid #ccc;background:#fff;">
-        <el-input placeholder="Commands" ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
+        <el-input placeholder="Start a new note by writing the title then [Enter] or use Command like: #find KEYWORD|TAG" ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
           @keyup.esc.native="clearInput()" @keyup="input = $event.target.value;" @keyup.enter.native="submitNote()"
           v-model="input" style="width:100%;">
         </el-input>
@@ -134,7 +134,11 @@
         }
       }
     },
-    computed: {},
+    computed: {
+      // doc(){
+      //   return docs
+      // }
+    },
     methods: {
       set(data) {
         // Set
@@ -157,7 +161,7 @@
       get(data) {
         // cat/ progress/ status
       },
-      cat(options) {
+      tag(options) {
         var self = this;
         // => if is ID
         var input = this.input;
@@ -166,6 +170,11 @@
           this.$message('Please at the post tags: #cat set tag1,tag2,tag');
           return;
         }
+
+        // debug
+
+
+      
         // SET
         var tags = input[1].split(",")
         if (this.$configs.get('id'), tags.length, input[0] === 'set') {
@@ -178,6 +187,7 @@
               }
             }
           }, {}, function () {});
+          //
           EventBus.$emit('updateEditor', '');
         }
         // GET
@@ -191,6 +201,33 @@
             var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
             self.docs = docs;
           });
+        }
+
+      },
+      layout(i){
+        var self = this;
+         var i = i.trim()
+        if(i){
+          var layout = i.split(";")
+        }else{
+           this.$message('Err; Specify the layout please by: #layout title; notes about the article; conclusion');
+          return
+          
+        }
+
+        if (this.$configs.get('id')) {
+          this.$db.update({
+            _id: this.$configs.get('id')
+          }, {
+            $addToSet: {
+              layout: {
+                $each: layout
+              }
+            }
+          }, {}, function () {});
+          //
+          EventBus.$emit('updateEditor', '');
+          
         }
 
       },
@@ -208,6 +245,9 @@
       fullScreen(v) {
         remote.getCurrentWindow().setFullScreen(v)
       },
+      /**
+       * Command Parser
+       */
       submitNote(e) {
         var self = this;
         if (event.key == "Enter" && this.input) {
@@ -300,7 +340,7 @@
       // EventBus.$on('fetchDocs', this.fetch)
       this.fetch()
       // 
-      this.$mousetrap.bind(['command+k', 'ctrl+k'], this.logIt);
+      // this.$mousetrap.bind(['command+k', 'ctrl+k'], this.logIt);
       this.$mousetrap.bind(['ctrl+f', 'command+f'], this.focus)
       /**
        * 
@@ -319,7 +359,7 @@
       /**
        * Main View
        * */
-      this.$mousetrap.bind(['command+l', 'ctrl+l'], function (e) {
+      this.$mousetrap.bind(['command+]', 'ctrl+]'], function (e) {
         self.setView('/')
       })
       /**
@@ -331,9 +371,9 @@
       /**
        * Toggle Logger* WIP
        * */
-      this.$mousetrap.bind(['ctrl+m'], function (e) {
-        self.toggle('isMetaOpen')
-      });
+      // this.$mousetrap.bind(['ctrl+m'], function (e) {
+      //   self.toggle('isMetaOpen')
+      // });
       /**
        * Toggle Search results
        * */
@@ -345,12 +385,16 @@
 </script>
 <style>
   html {
-    overflow: scroll;
+    /* overflow: scroll; */
+            overflow-y: hidden;
+        overflow-x: hidden;
   }
 
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
+            overflow-y: hidden;
+        overflow-x: hidden;
     /* make scrollbar transparent */
   }
 
@@ -358,6 +402,8 @@
     padding: 0;
     margin: 0;
     font-family: "Helvetica Neue", Helvetica;
+            overflow-y: hidden;
+        overflow-x: hidden;
   }
 
   .statusbar-shadow {

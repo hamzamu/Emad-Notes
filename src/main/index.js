@@ -27,11 +27,11 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     useContentSize: true,
-    width: 1190,
-    height: 730,
+    width: 1024,
+    height: 630,
     frame: true,
     title: 'Emad',
-    resizable: false
+    resizable: true
   })
 
   mainWindow.loadURL(winURL)
@@ -39,6 +39,8 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  mainWindow.setMenuBarVisibility(false)
 
   // mainTray = new Tray(require('path').join(__static, '/icons/note.png'))
   // mainTray.setToolTip('XXX')
