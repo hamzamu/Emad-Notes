@@ -26,6 +26,11 @@ export default new Router({
       component: require('@/components/editor').default
     },
     {
+      path: '/help',
+      name: 'help',
+      component: require('@/components/help').default
+    },    
+    {
       path: '/search',
       name: 'search',
       component: require('@/components/search').default

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="bg" style="background:#000;">
         <el-row :gutter="12">
             <div v-if="count == ''">No Posts {{count}}</div>
             <el-col :span="24" v-for="(i,index) in docs" v-bind:key="index">
@@ -49,8 +49,10 @@
     export default {
         name: 'list',
         props:['docs','config','input'],
+        // props:['config','input'],
         data() {
             return {
+                // docs: "",
                 count: 'loading..',
                 notes: null,
                 selected: ''
@@ -62,21 +64,23 @@
         computed: {},
         methods: {
             fetch() {
-                var self = this
-                this.$db.find({}, function (err, docs) {
-                    if (docs.length > 0) {
-                        self.count = docs.length
-                    }
-                    var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
-                    //self.notes = docs;
-                    self.docs = docs;
-                })
+                // var self = this
+                // this.$db.find({}, function (err, docs) {
+                //     if (docs.length > 0) {
+                //         self.count = docs.length
+                //     }
+                //     var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
+                //     //self.notes = docs;
+                //     self.docs = docs;
+                // })
             },
             remove(id) {
                 this.$db.remove({
                     _id: id
                 }, function (err) {});
                 this.fetch()
+                // EventBus.$on('fetchDocs', this.fetch)
+                EventBus.$emit('docRefresh');
             },
             pin(id,v) {
                var v = (v) ? false : true;

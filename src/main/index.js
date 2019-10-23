@@ -31,7 +31,9 @@ function createWindow() {
     height: 630,
     frame: true,
     title: 'Emad',
-    resizable: true
+    resizable: true,
+    // icon: path.join(__static, '/icons/note.png')
+    icon: require('path').join(__static, '/icons/note.png')
   })
 
   mainWindow.loadURL(winURL)
@@ -42,11 +44,11 @@ function createWindow() {
 
   mainWindow.setMenuBarVisibility(false)
 
-  // mainTray = new Tray(require('path').join(__static, '/icons/note.png'))
-  // mainTray.setToolTip('XXX')
-  // mainTray.on('click', () => {
-  //   mainWindow.show()
-  // })
+  mainTray = new Tray(require('path').join(__static, '/icons/note.png'))
+  mainTray.setToolTip('XXX')
+  mainTray.on('click', () => {
+    mainWindow.show()
+  })
 
 
   // Create the Application's main menu
@@ -105,7 +107,7 @@ function createWindow() {
     ]
   }];
 
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  // Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 
 
 }

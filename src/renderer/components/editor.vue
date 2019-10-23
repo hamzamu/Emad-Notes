@@ -9,6 +9,7 @@
             </div>
         </div>
         <!--  -->
+        <!-- editors background -->
         <div class="container content" v-bind:style="{ backgroundImage: 'url(' + bg + ')' }">
             <div class="meta-editor" v-if="isMeta">
                 <!-- {{tags}} -->
@@ -19,9 +20,10 @@
                             class="small"> {{ meta.createdAt | moment("from", "now") }}</span></el-tag>
                     <el-tag size="small" type='success' v-if="meta.updatedAt"><i class="el-icon-circle-check"></i> <span
                             class="small">{{ meta.updatedAt | moment("from", "now") }}</span></el-tag>
-                    <div class="box-cardx" v-if='!props && !tags'>
+                    <div class="box-cardx" v-if='!props && !tags && !layout && !cats'>
                         <p>
-                            There is notes, categories, or metas for this document. <br /> Please add some.
+                            There is notes, categories, or metas for this document. <br /> <br /> Please add some.
+                            <br /> <br /> Checkout the help window to know the commands.
                         </p>
                     </div>
                     <!--  -->
@@ -34,7 +36,7 @@
                             </el-button>
                             {{value}}
                         </div><br />
-                        <hr />
+                        <el-divider></el-divider>
                     </div>
                     <!--  -->
                     <!-- Tags/Cats -->
@@ -42,7 +44,7 @@
                         <h4>Tags</h4>
                         <el-tag v-for="(value, index) in cats" v-bind:key="index" size="small" type='info'>{{value}}
                         </el-tag>
-                        <hr />
+                        <el-divider></el-divider>
                     </div>
                     <!--  -->
                     <!--  -->
@@ -51,29 +53,47 @@
                         <div class="box-cardx" v-for="(value, name) in props" v-bind:key="name">
                             <span>{{name}}</span> : {{value}}
                         </div>
-                        <hr />
+                        <el-divider></el-divider>
                     </div>
                     <!--  -->
                     <!-- Notes -->
                     <div class="tag-group" v-if="tags">
                         <h4>Notes</h4>
+
                         <el-tag v-for="(i,index) in tags" v-bind:key="index" type="success">{{i}}</el-tag>
-                    </div>
-                    <br />
-                    <div class="tag-group" v-if="tags">
-                        <div v-for="(tag,index) in tags" v-bind:key="index">
-                            <el-tag>{{tag}}</el-tag><br />
-                            <ul class="notes">
-                                <li v-for="(i,index) in rdr(tag)" v-bind:key="index">
-                                    <el-button circle icon="el-icon-edit" size="mini"
-                                        @click="editNote = true ; sideNoteData.text = i.text; sideNoteData.tag = tag">
-                                    </el-button>
-                                    {{i.text}}
-                                </li>
-                            </ul>
+
+                        <br />
+                        <div class="tag-group" v-if="tags">
+                            <div v-for="(tag,index) in tags" v-bind:key="index">
+                                <el-tag>{{tag}}</el-tag><br />
+                                <ul class="notes">
+                                    <li v-for="(i,index) in rdr(tag)" v-bind:key="index">
+                                        <el-button circle icon="el-icon-edit" size="mini"
+                                            @click="editNote = true ; sideNoteData.text = i.text; sideNoteData.tag = tag">
+                                        </el-button>
+                                        {{i.text}}
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+                    <el-divider></el-divider>
                     <!--  -->
+                    <!--  -->
+
+                    <!--  -->
+                    <div class="" v-if='urls'>
+                        <h4>Attachments</h4>
+                        <div class="box-cardx" v-for="(value, index) in urls" v-bind:key="index">
+
+
+                            <span> <a class='board-item-a' :href="value" target="_blank"
+                                    @click.prevent="openExternalBrowser">{{value}}</a></span> <br />
+                        </div>
+                        <el-divider></el-divider>
+                    </div>
+                    <!--  -->
+
                     <!-- Layouts -->
                     <!--  -->
                     <!--  -->
@@ -129,8 +149,10 @@
 
     </div>
 </template>
+
 <script>
     import _ from 'lodash';
+    import axios from 'axios';
     import marked from 'marked';
     import {
         EventBus
@@ -138,8 +160,16 @@
     import {
         App
     } from '../app.engine.js'
+
+    const {
+        remote
+    } = require('electron');
+    // const cheerio = require('cheerio')
     export default {
         props: ['input'],
+        components: {
+
+        },
         data() {
             return {
                 session: '',
@@ -154,7 +184,7 @@
                 meta: '',
                 att: '',
                 isEditable: true,
-                bg: 'static/images/lined-paper-2.png',
+                // bg: 'static/images/lined-paper-2.png',
                 count: '',
                 props: '',
                 isMeta: true,
@@ -164,12 +194,40 @@
                 sideNoteData: {},
                 editLayout: false,
                 editingLayout: "",
-                oldLayout: ""
+                oldLayout: "",
+                urls: ""
             }
         },
         watch: {
-            input() {
-                // console.log('change it')
+            content() {
+                /**
+                 * Watch Content
+                 */
+                var content = this.content;
+                var urlRegex =
+                    /https?:\/\/([\w\d-\.]+)?[\w\d-\.]+\.{1}[\w]{1,4}((\/{1})?)([a-zA-Z0-9&-@_\+.‌​~#?\/=]*)?/gi;
+                var urls = content.match(urlRegex)
+
+                if (!urls || !urls.length) {
+                    return
+                }
+                var urls = _.uniq(urls)
+                // console.log(urls)
+                this.urls = urls;
+                this.attach(urls)
+                /**
+                 * 
+                 */
+
+
+                // axios.get(urls[0]).then((response) => {
+                //     console.log(response)
+                //     if (status == 200) {
+
+                //     }
+                // });
+
+
             }
         },
         computed: {
@@ -180,6 +238,9 @@
             }
         },
         methods: {
+            openExternalBrowser(e) {
+                remote.shell.openExternal(e.target.href);
+            },
             editSideNote() {
                 var data = {
                     '$pull': {
@@ -224,6 +285,7 @@
                 var notes = _.filter(JSON.parse(att), {
                     name: tag
                 });
+
                 return notes;
             },
             exit() {
@@ -282,11 +344,32 @@
             },
             toggleMeta() {
                 this.isMeta = (this.isMeta) ? false : true;
+            },
+            /** setAttachments */
+            attach(urls) {
+
+                console.log(urls)
+                //     axios.get(urls[0]).then((response) => {
+                //       console.log(response)
+                //       if(status == 200){
+
+                //       }
+                //   });
             }
+
         },
         mounted() {
             EventBus.$on('updateEditor', this.fetch);
-            EventBus.$on('toggle-meta', this.toggleMeta)
+            EventBus.$on('toggle-meta', this.toggleMeta);
+            /**
+             * Open Links in The browser
+             */
+            this.$el.querySelectorAll('.board-item-a').forEach(a => {
+                a.addEventListener('click', (e) => {
+                    e.preventDefault()
+                    require('electron').shell.openExternal(e.target.href)
+                })
+            })
         },
         created() {
             var self = this;
@@ -295,6 +378,7 @@
         }
     }
 </script>
+
 <style>
     .container {
         position: relative;
@@ -362,6 +446,7 @@
     }
 
     /*  */
+
     @font-face {
         font-family: octicons-link;
         src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
