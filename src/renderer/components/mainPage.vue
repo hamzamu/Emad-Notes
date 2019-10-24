@@ -87,7 +87,7 @@
                 this.$db.update({
                     _id: id
                 },{$set: {pinned:v}}, function (err) {});
-                this.fetch()
+                EventBus.$emit('docRefresh');
             },
             setNote(id) {
                 this.$configs.set('id', id)

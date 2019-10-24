@@ -1,94 +1,113 @@
 <template>
-    <el-container style="height:100vh; border: 0px solid #eee;padding:0;margin:0;" id="app">
-        <el-aside width="65px" v-if="isSideOpen">
-            <el-menu style="height:100vh;" class="sidebar">
-                <el-menu-item index="1" @click="$router.push('/')">
-                    <i class="el-icon-tickets"></i>
-                </el-menu-item>
-                <el-menu-item index="2" @click="$router.push('/editor')">
-                    <i class="el-icon-plus"></i>
-                </el-menu-item>
-                <!--  -->
-                <el-menu-item index="3" @click="$router.push('/help')">
-                    <i class="el-icon-warning-outline"></i>
-                </el-menu-item>
-                <!--  -->
-                <!-- <el-menu-item index="2" @click="$router.push('tags')">
+    <div>
+        <!--  -->
+        <!-- <div class="toolbar is-hiddenx">
+
+            <el-row>
+                <el-col :span="1" style="text-align:center;">
+
+                    <el-button type="primary" icon="el-icon-edit" circle @click="$router.push('/editor')"></el-button>
+                </el-col>
+                <el-col :span="8">
+                    <el-input placeholder="Please input" v-model="input"></el-input>
+                </el-col>
+                <el-col :span="15">
+                    <div class="appActions">
+                        <i class="el-icon-caret-top sysButton" @click="fullScreen(true)"></i>
+                        <i class="el-icon-caret-bottom sysButton" @click="fullScreen(false)"></i>
+                        <i class="el-icon-close sysButton" @click="close()"></i>
+                    </div>
+                </el-col>
+            </el-row>
+
+
+
+        </div> -->
+
+        <el-container style="height:100vh; border: 0px solid #eee;padding:0;margin:0;" id="app">
+            <el-aside width="65px" v-if="isSideOpen">
+                <el-menu style="height:100vh;" class="sidebar">
+                    <el-menu-item index="1" @click="$router.push('/')">
+                        <i class="el-icon-tickets"></i>
+                    </el-menu-item>
+                    <!-- <el-menu-item index="2" @click="$router.push('/editor')">
+                        <i class="el-icon-plus"></i>
+                    </el-menu-item> -->
+                    <!--  -->
+                    <el-menu-item index="3" @click="$router.push('/help')">
+                        <i class="el-icon-warning-outline"></i>
+                    </el-menu-item>
+                    <!--  -->
+                    <!-- <el-menu-item index="2" @click="$router.push('tags')">
                       <i class="el-icon-news"></i>
                     </el-menu-item> -->
-                <!-- <el-menu-item index="3" @click="$router.push('search')">
+                    <!-- <el-menu-item index="3" @click="$router.push('search')">
                       <i class="el-icon-search"></i>
                     </el-menu-item> -->
-                <!-- <el-menu-item index="3" @click="$router.push('settings')">
+                    <!-- <el-menu-item index="3" @click="$router.push('settings')">
                     <i class="el-icon-setting"></i>
                 </el-menu-item> -->
-                <!-- toggle -->
-                <!-- <el-menu-item index="3" @click="isSideOpen = !isSideOpen" class="is-hiddenx">
+                    <!-- toggle -->
+                    <!-- <el-menu-item index="3" @click="isSideOpen = !isSideOpen" class="is-hiddenx">
                     <i class="el-icon-back"></i>
                 </el-menu-item> -->
-                <!--  -->
-                <el-menu-item index="3" @click="close()" class="is-hiddenx">
-                    <i class="el-icon-close"></i>
-                </el-menu-item>
-            </el-menu>
-        </el-aside>
-        <el-container>
-            <div class="meta-logger" v-if="isMetaOpen">
-                <div class="meta-logger-content">
-                    DATA
+                    <!--  -->
+                    <el-menu-item index="3" @click="close()" class="is-hiddenx">
+                        <i class="el-icon-close"></i>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+            <el-container>
+                <div class="meta-logger" v-if="isMetaOpen">
+                    <div class="meta-logger-content">
+                        DATA
+                    </div>
                 </div>
-            </div>
-            <!-- 
+                <!-- 
                     AUTO COMPLETE
                    -->
-            <!-- Auro complete tags -->
-            <div class="statusbar-shadow">
-                <!-- {{$config}} -->
-                <!-- {{$configs}} -->
-                <div class="tag-group" v-if="tags">
-                    <el-tag v-for="(i,index) in tags" v-bind:key="index" type="danger">{{i}}</el-tag>
-                    <!-- <el-tag><b>Words:</b></el-tag> -->
-                </div>
-            </div>
-            <!-- <div class="toolbar is-hidden">
-                    <div class="tools"></div>
-                    <div class="appActions">
-                    <i class="el-icon-caret-top sysButton" @click="fullScreen(true)"></i>
-                    <i class="el-icon-caret-bottom sysButton" @click="fullScreen(false)"></i>
-                    <i class="el-icon-close sysButton" @click="close()"></i>
+                <!-- Auro complete tags -->
+                <div class="statusbar-shadow">
+                    <!-- {{$config}} -->
+                    <!-- {{$configs}} -->
+                    <div class="tag-group" v-if="tags">
+                        <el-tag v-for="(i,index) in tags" v-bind:key="index" type="danger">{{i}}</el-tag>
+                        <!-- <el-tag><b>Words:</b></el-tag> -->
                     </div>
+                </div>
+
+                <!-- <div style="text-align: right; font-size: 12px; padding:0px 10px 0 10px;border-bottom:1px solid #fff;">
                   </div> -->
-            <!-- <div style="text-align: right; font-size: 12px; padding:0px 10px 0 10px;border-bottom:1px solid #fff;">
-                  </div> -->
-            <el-main style="padding:0;margin:0px;background:#fff;">
-                <!-- {{$configs}} -->
-                <router-view :config="config" :docs="docs" :input="input"></router-view>
-            </el-main>
-            <!--  -->
-            <el-footer id="commands" style="padding:5px;border-top:1px solid #ccc;background:#fff;">
-                <el-input
-                    placeholder="Start a new note by writing the title then [Enter] or use Command like: #find KEYWORD|TAG"
-                    ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
-                    @keyup.esc.native="clearInput()" @keyup="input = $event.target.value;"
-                    @keyup.enter.native="submitNote()" v-model="input" style="width:100%;">
-                </el-input>
+                <el-main style="padding:0;margin:0px;background:#fff;">
+                    <!-- {{$configs}} -->
+                    <router-view :config="config" :docs="docs" :input="input"></router-view>
+                </el-main>
                 <!--  -->
-            </el-footer>
+                <el-footer id="commands" style="padding:5px;border-top:1px solid #ccc;background:#fff;">
+                    <el-input
+                        placeholder="Start a new note by writing the title then [Enter] or use Command like: #find KEYWORD|TAG"
+                        ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
+                        @keyup.esc.native="clearInput()" @keyup="input = $event.target.value;"
+                        @keyup.enter.native="submitNote()" v-model="input" style="width:100%;">
+                    </el-input>
+                    <!--  -->
+                </el-footer>
+            </el-container>
+            <!-- Dialog Test -->
+            <el-dialog title="Tags" :visible.sync="dialogVisible" width="100%" fullscreen>
+                <p>
+                    <el-input placeholder="Search tags" ref="tags" @keyup="input = $event.target.value;"
+                        @keyup.enter.native="getTags" v-model="searchTags" style="width:100%;"></el-input>
+                </p>
+                <div>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">Cancel</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">Search</el-button>
+                </span>
+            </el-dialog>
         </el-container>
-        <!-- Dialog Test -->
-        <el-dialog title="Tags" :visible.sync="dialogVisible" width="100%" fullscreen>
-            <p>
-                <el-input placeholder="Search tags" ref="tags" @keyup="input = $event.target.value;"
-                    @keyup.enter.native="getTags" v-model="searchTags" style="width:100%;"></el-input>
-            </p>
-            <div>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="dialogVisible = false">Search</el-button>
-            </span>
-        </el-dialog>
-    </el-container>
+    </div>
 </template>
 <script>
     import {
@@ -288,12 +307,31 @@
                     console.log(id)
                     // IF ID 
                     var tags = App.getTags(this.input)
-                    if (id) {
+                    if (id && tags && tags.length) {
                         App.setTags(tags, this.$configs.get('id'))
                         App.metaSet(self.input, this.$configs.get('id'))
-                        EventBus.$emit('updateEditor', '');
-                        // 
-                    } else {
+                        EventBus.$emit('updateEditor', 'hello');
+                        return
+                    }
+                    //
+                    if (id && !tags) {
+
+                        EventBus.$emit('appendEditor', this.input);
+
+                        // self.$db.findOne({
+                        //     _id: id
+                        // }, function (err, doc) {
+                        //     console.log(doc.content)
+                        //     var content = doc.content;
+                        //     console.log('note', self.input)
+
+                        //     // return content
+                        // });
+                        // self.fetch()
+                        // console.log('note', self.input)
+                    }
+                    //
+                    if (!id) {
                         /**
                          * Add a new Note
                          */
@@ -302,21 +340,17 @@
                             content: self.input,
                             createdAt: new Date(),
                             updatedAt: new Date(),
+                            cats: [],
                             tags: tags || []
                         }, function (err, newDoc) {
                             // // App.setTags(tags, newDoc._id)
                             // App.metaSet(self.input, newDoc._id)
                             // self.id = newDoc._id
-
-
-
                         });
-
                     }
                     // EventBus.$emit('fetchDocs');
                     self.input = ''
                     self.fetch()
-
                 }
             },
             logIt() {
@@ -366,7 +400,6 @@
                         var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
                         console.log(docs)
                         self.docs = docs;
-
                     }
                 })
             }
@@ -556,20 +589,29 @@
     .toolbar {
         display: block;
         width: 100%;
-        height: 30px;
+        height: 60px;
         z-index: 1004;
+        line-height: 50px;
+        background: #fff;
+        padding-top: 5px;
+        /* background-image: linear-gradient(top, red 0%, bottom 100%); */
     }
 
     .tools {
         width: 48%;
         display: block;
         float: left;
+        padding: 5px;
+        margin-right: 5px;
+
     }
 
     .appActions {
         width: 48%;
         text-align: right;
         float: right;
+        padding-right: 10px;
+
     }
 
     .small {

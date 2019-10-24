@@ -27,8 +27,8 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     useContentSize: true,
-    width: 1024,
-    height: 630,
+    width: 1560,
+    height: 870,
     frame: true,
     title: 'Emad',
     resizable: true,
