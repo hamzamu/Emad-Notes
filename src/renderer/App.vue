@@ -479,6 +479,7 @@
     html,
     body {
         overflow: hidden;
+        scroll-behavior: smooth;
     }
 
 
@@ -487,6 +488,7 @@
         overflow-y: hidden;
         overflow-x: hidden;
         /* position: fixed;  */
+        scroll-behavior: smooth;
     }
 
 
@@ -510,6 +512,7 @@
         overflow-y: hidden;
         overflow-x: hidden;
         background: #fff;
+        scroll-behavior: smooth;
     }
 
     .statusbar-shadow {
