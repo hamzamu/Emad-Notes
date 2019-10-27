@@ -67,6 +67,9 @@ app.cleanTags = function (arr) {
     return arr;
 }
 
+/**
+ * Commands Parser
+ */
 app.commandParse = (str)=>{    
     var arr = app.getTags(str);
     var arr = app.cleanTags(arr);
@@ -77,6 +80,9 @@ app.commandParse = (str)=>{
     }
 }
 
+/**
+ * Search
+ */
 app.find = (option)=>{
     var option = option.trim()
     var result;

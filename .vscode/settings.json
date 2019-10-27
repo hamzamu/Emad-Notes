@@ -1,0 +1,6 @@
+{
+    "files.exclude": {
+        ".electron-vue": true,
+        "node_modules": true
+    }
+}

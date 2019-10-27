@@ -1,11 +1,23 @@
 <template>
-    <div>
+    <div class="disable-scroll" style="position:relative">
+
+
+
+        <div id="commands" style="fixedFooter">
+            <el-input
+                placeholder="Start a new note by writing the title then [Enter] or use Command like: #find KEYWORD|TAG"
+                ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
+                @keyup.esc.native="clearInput()" @keyup="input = $event.target.value;"
+                @keyup.enter.native="submitNote()" v-model="input" style="width:100%;border-radius:0px;"
+                class="command">
+            </el-input>
+            <!--  -->
+        </div>
+
         <!--  -->
         <!-- <div class="toolbar is-hiddenx">
-
             <el-row>
                 <el-col :span="1" style="text-align:center;">
-
                     <el-button type="primary" icon="el-icon-edit" circle @click="$router.push('/editor')"></el-button>
                 </el-col>
                 <el-col :span="8">
@@ -19,20 +31,17 @@
                     </div>
                 </el-col>
             </el-row>
-
-
-
         </div> -->
-
-        <el-container style="height:100vh; border: 0px solid #eee;padding:0;margin:0;" id="app">
+        <!-- height:100vh; border: 0px solid #eee;padding:0;margin:0; -->
+        <el-container class="disable-scroll" style="" id="app">
             <el-aside width="65px" v-if="isSideOpen">
                 <el-menu style="height:100vh;" class="sidebar">
                     <el-menu-item index="1" @click="$router.push('/')">
-                        <i class="el-icon-tickets"></i>
+                        <i class="el-icon-notebook-2"></i>
                     </el-menu-item>
-                    <!-- <el-menu-item index="2" @click="$router.push('/editor')">
+                    <el-menu-item index="2" @click="$router.push('/editor')">
                         <i class="el-icon-plus"></i>
-                    </el-menu-item> -->
+                    </el-menu-item>
                     <!--  -->
                     <el-menu-item index="3" @click="$router.push('/help')">
                         <i class="el-icon-warning-outline"></i>
@@ -57,6 +66,7 @@
                     </el-menu-item>
                 </el-menu>
             </el-aside>
+            <!-- Container -->
             <el-container>
                 <div class="meta-logger" v-if="isMetaOpen">
                     <div class="meta-logger-content">
@@ -75,24 +85,17 @@
                         <!-- <el-tag><b>Words:</b></el-tag> -->
                     </div>
                 </div>
-
                 <!-- <div style="text-align: right; font-size: 12px; padding:0px 10px 0 10px;border-bottom:1px solid #fff;">
                   </div> -->
-                <el-main style="padding:0;margin:0px;background:#fff;">
+                <el-main class="disable-scroll" style="padding:0;margin:0px;background:#fff; ">
                     <!-- {{$configs}} -->
                     <router-view :config="config" :docs="docs" :input="input"></router-view>
                 </el-main>
                 <!--  -->
-                <el-footer id="commands" style="padding:5px;border-top:1px solid #ccc;background:#fff;">
-                    <el-input
-                        placeholder="Start a new note by writing the title then [Enter] or use Command like: #find KEYWORD|TAG"
-                        ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
-                        @keyup.esc.native="clearInput()" @keyup="input = $event.target.value;"
-                        @keyup.enter.native="submitNote()" v-model="input" style="width:100%;">
-                    </el-input>
-                    <!--  -->
-                </el-footer>
             </el-container>
+
+
+
             <!-- Dialog Test -->
             <el-dialog title="Tags" :visible.sync="dialogVisible" width="100%" fullscreen>
                 <p>
@@ -107,19 +110,29 @@
                 </span>
             </el-dialog>
         </el-container>
+
+
+
+
+
+
+
     </div>
 </template>
 <script>
     import {
         remote
     } from 'electron';
+    import _ from 'lodash';
     import {
         EventBus
     } from './eventBus.js';
     import {
         App
     } from './app.engine.js'
-    import _ from 'lodash';
+    import {
+        Emad
+    } from './app.emad.js'
     // TESTING
     // import axios from 'axios';
     // import got from 'got';
@@ -137,7 +150,7 @@
             return {
                 test: '',
                 input: '',
-                configs: this.$configs.get('id'),
+                current: this.$configs.get('id'),
                 // id: ,
                 dialogVisible: false,
                 searchTags: '',
@@ -190,18 +203,11 @@
             set(data) {
                 // Set
                 var data = data.split(':')
-                if (!this.$configs.get('id')) {
+                var id = this.$configs.get('id');
+                if (!id || !data.length || !data[0] || !data[1]) {
                     return
                 }
-                if (!data.length || !data[0] || !data[1]) return;
-                this.$db.update({
-                    _id: this.$configs.get('id')
-                }, {
-                    $set: {
-                        ["props." + data[0]]: data[1],
-                        updatedAt: new Date()
-                    }
-                }, function () {});
+                Emad.docProps(id, data[0], data[1])
                 EventBus.$emit('updateEditor', '');
                 this.input = ''
             },
@@ -249,7 +255,11 @@
                 }
             },
             layout(i) {
-                var self = this;
+                var id = this.$configs.get('id');
+                if (!id) {
+                    return
+                }
+
                 var i = i.trim()
                 if (i) {
                     var layout = i.split(";")
@@ -258,19 +268,9 @@
                         'Err; Specify the layout please by: #layout title; notes about the article; conclusion');
                     return
                 }
-                if (this.$configs.get('id')) {
-                    this.$db.update({
-                        _id: this.$configs.get('id')
-                    }, {
-                        $addToSet: {
-                            layout: {
-                                $each: layout
-                            }
-                        }
-                    }, {}, function () {});
-                    //
-                    EventBus.$emit('updateEditor', '');
-                }
+                Emad.docBatch(id, 'layout', layout)
+                EventBus.$emit('updateEditor', '');
+
             },
             checkTag(e) {
                 if (this.$configs.get('id') && this.input) {
@@ -301,7 +301,6 @@
                     if (command && command.command) {
                         this[command.command](command.param);
                         this.input = ''
-                        return
                     }
                     var id = this.$configs.get('id')
                     console.log(id)
@@ -311,42 +310,39 @@
                         App.setTags(tags, this.$configs.get('id'))
                         App.metaSet(self.input, this.$configs.get('id'))
                         EventBus.$emit('updateEditor', 'hello');
-                        return
                     }
                     //
                     if (id && !tags) {
-
                         EventBus.$emit('appendEditor', this.input);
-
-                        // self.$db.findOne({
-                        //     _id: id
-                        // }, function (err, doc) {
-                        //     console.log(doc.content)
-                        //     var content = doc.content;
-                        //     console.log('note', self.input)
-
-                        //     // return content
-                        // });
-                        // self.fetch()
-                        // console.log('note', self.input)
                     }
                     //
                     if (!id) {
                         /**
                          * Add a new Note
                          */
-                        self.$db.insert({
+                        //  self.$db.insert({
+                        //     title: self.input,
+                        //     content: self.input,
+                        //     createdAt: new Date(),
+                        //     updatedAt: new Date(),
+                        //     notes:[],
+                        //     cats: [],
+                        //     tags: tags || []
+                        // }, function (err, newDoc) {
+                        //     // // App.setTags(tags, newDoc._id)
+                        //     // App.metaSet(self.input, newDoc._id)
+                        //     // self.id = newDoc._id
+                        // });
+                        var doc = {
                             title: self.input,
                             content: self.input,
                             createdAt: new Date(),
                             updatedAt: new Date(),
+                            notes: [],
                             cats: [],
                             tags: tags || []
-                        }, function (err, newDoc) {
-                            // // App.setTags(tags, newDoc._id)
-                            // App.metaSet(self.input, newDoc._id)
-                            // self.id = newDoc._id
-                        });
+                        }
+                        Emad.docNew(doc)
                     }
                     // EventBus.$emit('fetchDocs');
                     self.input = ''
@@ -407,6 +403,7 @@
         created() {},
         mounted() {
             var self = this;
+
             this.fetch()
             EventBus.$on('docRefresh', this.fetch)
             // EventBus.$emit('docRefresh');
@@ -458,11 +455,41 @@
     }
 </script>
 <style>
+    .fixedFooter {
+        padding: 5px;
+        border-top: 1px solid #ccc;
+        background: #fff;
+        position: absolute;
+        width: 100%;
+        bottom: 100px;
+        left: 0;
+        z-index: 1009;
+    }
+
+
+
+    .el-input__inner {
+        border-radius: 0px !important;
+    }
+
+    .command {
+        border-radius: 0px;
+    }
+
+    html,
+    body {
+        overflow: hidden;
+    }
+
+
     html {
         /* overflow: scroll; */
         overflow-y: hidden;
         overflow-x: hidden;
+        /* position: fixed;  */
     }
+
+
 
     ::-webkit-scrollbar {
         width: 0px;
@@ -537,34 +564,6 @@
         padding-left: 25px;
     }
 
-    /*  */
-    .meta-editor {
-        width: 35%;
-        display: block;
-        /* height: auto; */
-        height: 100vh;
-        position: fixed;
-        right: 0;
-        top: 0;
-        color: #333;
-        background-color: rgba(255, 255, 255, 0.75);
-        border-left: 1px solid #e4e4e4;
-        z-index: 1009;
-        overflow-y: scroll !important;
-        overflow: auto;
-        padding-bottom: 100px;
-    }
-
-    .meta-container {
-        padding: 10px !important;
-        padding-bottom: 100px !important;
-        width: 95%;
-        margin: 0px auto;
-        height: auto;
-        overflow-y: scroll !important;
-        overflow: auto;
-    }
-
     .sidebar {
         height: 100% !important;
     }
@@ -603,7 +602,6 @@
         float: left;
         padding: 5px;
         margin-right: 5px;
-
     }
 
     .appActions {
@@ -611,10 +609,20 @@
         text-align: right;
         float: right;
         padding-right: 10px;
-
     }
 
     .small {
         font-size: 12px !important;
+    }
+
+    .disable-select {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .disable-scroll {
+        overflow: hidden;
     }
 </style>

@@ -1,9 +1,9 @@
 {
-  "name": "dent-emr",
+  "name": "Emad Note",
   "version": "0.0.1",
   "author": "Hamza <dr.hamzamusa@gmail.com>",
-  "description": "An electron-vue project",
-  "license": null,
+  "description": "Note-taking app for productivity",
+  "license": "GPLv3",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -22,8 +22,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "dent-emr",
-    "appId": "com.dent.emr",
+    "productName": "emad-note",
+    "appId": "com.emad.note",
     "directories": {
       "output": "build"
     },

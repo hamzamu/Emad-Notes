@@ -32,8 +32,10 @@ function createWindow() {
     frame: true,
     title: 'Emad',
     resizable: true,
+    // OLD
     // icon: path.join(__static, '/icons/note.png')
-    icon: require('path').join(__static, '/icons/note.png')
+    // NEW WORKING
+    icon: require('path').join(__static, '/icons/emad.png')
   })
 
   mainWindow.loadURL(winURL)
