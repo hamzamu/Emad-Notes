@@ -111,7 +111,7 @@
 
   .doc button {
     font-size: .8em;
-    cursor: pointer;
+    /* cursor: pointer; */
     outline: none;
     padding: 0.75em 2em;
     border-radius: 2em;

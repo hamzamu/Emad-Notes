@@ -1,9 +1,29 @@
 <template>
     <div class="disable-scroll" style="position:relative">
+        <!-- <el-row class="" style="background:#fff;border-bottom:1px solid #eee;">
+            <el-col :span="8">
+                .
+            </el-col>
+            <el-col :span="8">
+                <el-input
+                    placeholder="Start a new note by writing the title then [Enter] or use Command like: #find KEYWORD|TAG"
+                    ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
+                    @keyup.esc.native="clearInput()" @keyup="input = $event.target.value;"
+                    @keyup.enter.native="submitNote()" v-model="input" style="width:100%;border-radius:0px;"
+                    class="command">
+                </el-input>
+            </el-col>
+            <el-col :span="8">
+                <div class="appActions">
+                    <i class="el-icon-caret-top sysButton" @click="fullScreen(true)"></i>
+                    <i class="el-icon-caret-bottom sysButton" @click="fullScreen(false)"></i>
+                    <i class="el-icon-close sysButton" @click="close()"></i>
+                </div>
+            </el-col>
+        </el-row> -->
+        <!--  -->
 
-
-
-        <div id="commands" style="fixedFooter">
+        <!-- <div id="commands" style="fixedFooter">
             <el-input
                 placeholder="Start a new note by writing the title then [Enter] or use Command like: #find KEYWORD|TAG"
                 ref="commands" @keyup.right.native="checkTag" @blur.native="input == ''"
@@ -11,9 +31,7 @@
                 @keyup.enter.native="submitNote()" v-model="input" style="width:100%;border-radius:0px;"
                 class="command">
             </el-input>
-            <!--  -->
-        </div>
-
+        </div> -->
         <!--  -->
         <!-- <div class="toolbar is-hiddenx">
             <el-row>
@@ -39,9 +57,14 @@
                     <el-menu-item index="1" @click="$router.push('/')">
                         <i class="el-icon-notebook-2"></i>
                     </el-menu-item>
-                    <el-menu-item index="2" @click="$router.push('/editor')">
+                    <!--  -->
+                    <el-menu-item index="2" @click="newNote()">
                         <i class="el-icon-plus"></i>
                     </el-menu-item>
+                    <!--  -->
+                    <!-- <el-menu-item index="2" @click="$router.push('/editor')">
+                        <i class="el-icon-plus"></i>
+                    </el-menu-item> -->
                     <!--  -->
                     <el-menu-item index="3" @click="$router.push('/help')">
                         <i class="el-icon-warning-outline"></i>
@@ -93,9 +116,6 @@
                 </el-main>
                 <!--  -->
             </el-container>
-
-
-
             <!-- Dialog Test -->
             <el-dialog title="Tags" :visible.sync="dialogVisible" width="100%" fullscreen>
                 <p>
@@ -110,13 +130,6 @@
                 </span>
             </el-dialog>
         </el-container>
-
-
-
-
-
-
-
     </div>
 </template>
 <script>
@@ -172,7 +185,7 @@
                 // Auto Complete Tags
                 if (this.$configs.get('id') && this.input) {
                     // Tags filter
-                    this.$db.findOne({
+                    this.$db.notes.findOne({
                         _id: this.$configs.get('id')
                     }, function (err, doc) {
                         if (doc && doc.tags) {
@@ -200,6 +213,9 @@
             }
         },
         methods: {
+            newNote() {
+                EventBus.$emit('newNote')
+            },
             set(data) {
                 // Set
                 var data = data.split(':')
@@ -229,7 +245,7 @@
                 var tags = tags.split(",")
                 if (this.$configs.get('id') && tags.length && input[0] === 'set') {
                     var tags = _.compact(tags)
-                    this.$db.update({
+                    this.$db.notes.update({
                         _id: this.$configs.get('id')
                     }, {
                         $addToSet: {
@@ -243,7 +259,7 @@
                 }
                 // GET
                 if (input[0] == 'get' && tags.length) {
-                    this.$db.find({
+                    this.$db.notes.find({
                         cats: {
                             $in: tags
                         }
@@ -259,7 +275,6 @@
                 if (!id) {
                     return
                 }
-
                 var i = i.trim()
                 if (i) {
                     var layout = i.split(";")
@@ -270,7 +285,6 @@
                 }
                 Emad.docBatch(id, 'layout', layout)
                 EventBus.$emit('updateEditor', '');
-
             },
             checkTag(e) {
                 if (this.$configs.get('id') && this.input) {
@@ -368,8 +382,9 @@
                 this.tags = ''
             },
             fetch() {
+                console.log('note fetch')
                 var self = this
-                this.$db.find({}, function (err, docs) {
+                this.$db.notes.find({}, function (err, docs) {
                     if (docs.length > 0) {
                         self.count = docs.length
                     }
@@ -385,8 +400,7 @@
             find(option) {
                 var self = this;
                 var regex = new RegExp(option, 'ig');
-                console.log(option)
-                this.$db.find({
+                this.$db.notes.find({
                     title: {
                         $regex: regex
                     }
@@ -394,7 +408,6 @@
                     if (docs && docs.length > 0) {
                         self.count = docs.length
                         var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
-                        console.log(docs)
                         self.docs = docs;
                     }
                 })
@@ -403,9 +416,9 @@
         created() {},
         mounted() {
             var self = this;
-
             this.fetch()
             EventBus.$on('docRefresh', this.fetch)
+            EventBus.$on('searchDocs',this.find)
             // EventBus.$emit('docRefresh');
             // 
             // EventBus.$emit('fetchDocs');
@@ -455,6 +468,10 @@
     }
 </script>
 <style>
+    .is-hidden {
+        display: none;
+    }
+
     .fixedFooter {
         padding: 5px;
         border-top: 1px solid #ccc;
@@ -465,8 +482,6 @@
         left: 0;
         z-index: 1009;
     }
-
-
 
     .el-input__inner {
         border-radius: 0px !important;
@@ -482,7 +497,6 @@
         scroll-behavior: smooth;
     }
 
-
     html {
         /* overflow: scroll; */
         overflow-y: hidden;
@@ -490,8 +504,6 @@
         /* position: fixed;  */
         scroll-behavior: smooth;
     }
-
-
 
     ::-webkit-scrollbar {
         width: 0px;
@@ -628,4 +640,24 @@
     .disable-scroll {
         overflow: hidden;
     }
+    .has-border-bt{
+        border-bottom: 1px solid #eee;
+        padding-bottom: 7px;
+    }
+    /* 
+        editor-container
+     */
+     .editor-container{
+         padding:10px;
+     }
+     .task{
+         border: 1px solid #eee;
+         padding:20px 10px 20px 20px;
+     }
+     .row-padding{
+         padding-top: 5px;
+     }
+     .has-text-right{
+         text-align: right;
+     }
 </style>

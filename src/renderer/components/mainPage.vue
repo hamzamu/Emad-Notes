@@ -1,29 +1,66 @@
 <template>
-    <div class="bg is-fh disable-scrollx" style="background:#FFF;">
+    <div class="bg is-fh disable-scrollx" style="background:#FFF;position:relative;">
         <el-row :gutter="12" class="is-fh disable-selectx disable-scroll">
-            <!-- <div v-if="count == ''">No Posts {{count}}</div> -->
-            <!-- List -->
+            <!-- Toolbar -->
+            <el-row :gutter="24" style="padding:0px;border-bottom:1px solid #eee;">
+                <el-col :span="5" class="notes-listx" style="text-align:center;">
+                    <el-input placeholder="Search note" style="width:98%;margin:10px 15px" v-model="searchInput"
+                        @change="searchDocs"></el-input>
+                </el-col>
+                <!--  -->
+                <el-col :span="6">
+                    <el-button-group style="margin:10px;">
+
+                        <el-button size="small" :class="{'btn-focus' : currentView == 'editor'}" round
+                            @click="currentView = 'editor' ; noteSet('id',{currentView:'editor'})">Editor
+                        </el-button>
+
+                        <el-button size="small" :class="{'btn-focus' : currentView == 'attach'}" round
+                            @click="currentView = 'attach'; noteSet('id',{currentView:'attach'})">
+                            Attachments
+                        </el-button>
+
+
+                        <el-button size="small" :class="{'btn-focus' : currentView == 'tasks'}" round
+                            @click="currentView = 'tasks'; noteSet('id',{currentView:'tasks'})">
+                            Tasks
+                        </el-button>
+
+
+                    </el-button-group>
+                </el-col>
+                <!--  -->
+                <el-col :span="6"
+                    style="margin:10px;text-align:right;padding-top:0px;font-size:22px;font-weight:normal;color:#555;">
+                    <!-- ADD EVENTS -->
+                    <!-- <i class="el-icon-star-off"></i>
+                    <i class="el-icon-set-up"></i>
+                    <i class="el-icon-open"></i> -->
+                    <el-input v-if="currentView == 'tasks'" placeholder="New task" v-model="newTask" @keyup.enter.native="newTaskSet"></el-input>
+
+                </el-col>
+                <!--  -->
+                <el-col :span="6"
+                    style="margin:10px;text-align:right;padding-top:10px;font-size:22px;font-weight:normal;color:#555;">
+                    <!-- Add Event -->
+                    <!-- <i class="el-icon-delete"></i> -->
+
+                </el-col>
+            </el-row>
+            <!--  -->
+            <!-- List: Notesss -->
             <el-col :span="5" class="has-sidebar disable-select is-list" style="padding:0;">
-                <el-row :gutter="12" class="is-sharp boxed " v-for="(i,index) in docs" v-bind:key="index">
-                    <!-- <span class="float:right;">
-                        <el-switch v-model="i.selected" @click.native="selected = i._id"></el-switch>
-                    </span> -->
+                <el-row :gutter="12" class="is-sharp boxed is-clickable" v-for="(i,index) in docs" v-bind:key="index"
+                    style="margin:0;padding:0;">
                     <!--  -->
-                    <!-- Actions WIP width:120px;padding:0px 0 5px 0;-->
-                    <!-- <div style="float:right;text-align:center;width:120px;padding:5px 0 5px 0;">
-                        <small>Status: draft</small> <br />
-                        <el-progress style="margin-top:10px;" color="#8e71c7" :show-text="false" :text-inside="false"
-                            :stroke-width="10" :percentage="43">
-                        </el-progress>
-                    </div> -->
-                    <!--  -->
-                    <el-col :span="12" class="notes-list">
-                        <i class="el-icon-star-on" v-show="i.pinned"></i>
-                        <!-- <a @click="setNote(i._id)">{{i.title}}</a> -->
-                        <a @click="viewNote(i._id)">{{i.title}}</a>
-                        <!-- <p>{{i.content}}</p> -->
-                        <br />
-                        <small @click="setNote(i._id)">{{ i.createdAt | moment("from", "now") }}</small>
+                    <el-col :span="12" class="notes-listx" :class="{ 'note-active' : id == i._id}"
+                        style="width:100%;padding:10px;margin:0;font-size:90%;" @click.native="viewNote(i._id)">
+
+                        <p>
+                            <i class="el-icon-star-on" v-show="i.pinned"></i>
+                            <span style="display:block;width:100%;">{{i.title}}</span>
+                        </p>
+                        <small><strong>{{ i.updatedAt | moment("from", "now") }}</strong></small>
                     </el-col>
                     <!-- <el-col :span="12" style="float:right;text-align:right;">
                         <el-button @click="viewNote(i._id)" icon="el-icon-edit" type="text" circle></el-button>
@@ -33,9 +70,12 @@
                 </el-row>
             </el-col>
             <!-- Editor -->
-            <el-col :span="19" class="is-list">
-                <!-- <editor v-bind:doc="doc"></editor> -->
-                <todo v-bind:doc="doc" v-bind:id="id"></todo>
+            <el-col :span="19" class="is-list" style="position:relative;">
+                <editor v-show="currentView == 'editor'" v-bind:doc="doc"></editor>
+                <attachments v-show="currentView == 'attach'" v-bind:doc="doc" v-bind:id="id"></attachments>
+                <tasks v-show="currentView == 'tasks'" v-bind:doc="doc" v-bind:id="id"></tasks>
+                <!-- Navigation -->
+                <br />
             </el-col>
         </el-row>
     </div>
@@ -45,14 +85,25 @@
         EventBus
     } from '../eventBus.js'
     import _ from 'lodash';
-    import Editor from './editor-comp'
-    import Todo from './attachment-editor'
+    import {
+        App
+    } from '../app.engine.js'
+    import {
+        Emad
+    } from '../app.emad.js'
+    const {
+        remote
+    } = require('electron');
+    import Editor from './editor-content'
+    import Attachments from './editor-attachment'
+    import Tasks from './editor-tasks'
     export default {
         name: 'list',
         props: ['docs', 'config', 'input'],
         components: {
             Editor,
-            Todo
+            Attachments,
+            Tasks
         },
         // props:['config','input'],
         data() {
@@ -61,35 +112,49 @@
                 count: 'loading..',
                 notes: null,
                 selected: '',
-                doc:'',
-                attachments:'',
+                doc: '',
+                attachments: '',
                 tags: '',
-                props:'',
-                meta:'',
-                id:''
+                props: '',
+                meta: '',
+                id: '',
+                currentView: '',
+                searchInput: '',
+                newTask:''
             }
         },
-        watch: {},
+        watch: {
+            currentView: function () {
+                if (!this.currentView) {
+                    this.currentView = 'editor'
+                }
+            },
+            // searchInput: ()=>{
+            //     if(this.searchInput){
+            //         console.log('search',this.searchInput)
+            //     }
+            // }
+
+        },
         computed: {},
         methods: {
-            fetch() {
-                // var self = this
-                // this.$db.find({}, function (err, docs) {
-                //     if (docs.length > 0) {
-                //         self.count = docs.length
-                //     }
-                //     var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
-                //     //self.notes = docs;
-                //     self.docs = docs;
-                // })
+            searchDocs() {
+                EventBus.$emit('searchDocs', this.searchInput)
             },
+            setEditorView(view) {
+                this.currentView = view;
+            },
+            fetch() {},
+            /**
+             * getNote
+             */
             getNote(id) {
                 var self = this;
                 // this.$configs.get('id')
                 var id = this.$configs.get('id');
                 if (id) {
                     // console.log('s',id)
-                    this.$db.findOne({
+                    this.$db.notes.findOne({
                         _id: id
                     }, function (err, doc) {
                         self.content = doc.content
@@ -104,10 +169,13 @@
                         // self.layout = doc.layout;
                         self.doc = doc;
                         self.notes = doc.notes;
+                        self.currentView = doc.currentView;
                     });
-                }else{
-                    this.$db.findOne({},{updatedAt:-1}, function (err, doc) {
-                        self.$configs.set('id',doc._id)
+                } else {
+                    this.$db.notes.findOne({}, {
+                        updatedAt: -1
+                    }, function (err, doc) {
+                        self.$configs.set('id', doc._id)
                         self.content = doc.content
                         self.tags = doc.tags
                         self.props = doc.props
@@ -120,20 +188,27 @@
                         // self.layout = doc.layout;
                         self.doc = doc;
                         self.notes = doc.notes;
+                        self.currentView = doc.currentView || 'editor'
+                        self.id = doc._id
                     });
                 }
             },
+            /**
+             * Remove Note
+             */
             remove(id) {
-                this.$db.remove({
+                this.$db.notes.remove({
                     _id: id
                 }, function (err) {});
                 this.fetch()
-                // EventBus.$on('fetchDocs', this.fetch)
                 EventBus.$emit('docRefresh');
             },
+            /**
+             * Pin Note
+             */
             pin(id, v) {
                 var v = (v) ? false : true;
-                this.$db.update({
+                this.$db.notes.update({
                     _id: id
                 }, {
                     $set: {
@@ -142,24 +217,55 @@
                 }, function (err) {});
                 EventBus.$emit('docRefresh');
             },
+            // OLD
             setNote(id) {
                 this.$configs.set('id', id)
                 this.$router.push('editor')
             },
+            /**
+             * Current Working
+             */
             viewNote(id) {
                 this.$configs.set('id', id)
                 // EventBus.$emit('getNote', id);
+                this.id = id;
                 this.getNote(id)
+            },
+            /**
+             * Set Note: Options
+             */
+            noteSet(id, data) {
+                Emad.noteUpdate(this.doc._id, data)
+                this.getNote(this.doc._id)
+            },
+            /**New Editor */
+            newNote() {
+                this.currentView = 'editor';
+                this.$configs.set('id', '')
+                this.doc = ''
+                this.id = ''
+            },
+            newTaskSet(){
+                console.log(this.id,this.newTask)
+                // Emad.docBatch(this.id, 'tasks', [{task:this.newTask, createdAt: new Date()}])
+                Emad.attachInsert(this.id, {type:'task', isTask:true, text:this.newTask, createdAt: new Date(),isAttach:false, isExtra:true})
+                this.newTask = '';
+                this.getNote(this.id)
             }
         },
         created() {
             this.$configs.set('id', '')
-            // this.$db.remove({}, { multi: true }, function (err, numRemoved) {
+            // this.$db.notes.remove({}, { multi: true }, function (err, numRemoved) {
             // });
         },
         mounted() {
+            // Fetch All docs
             EventBus.$on('fetchDocs', this.fetch)
+            // Fetch Doc 
             EventBus.$on('fetchDoc', this.getNote)
+            // New Editor
+            EventBus.$on('newNote', this.newNote)
+            // Refresh
             this.fetch()
             this.getNote()
         }
@@ -170,11 +276,17 @@
         background: #eee;
     }
 
+    .is-clickable{
+        cursor: pointer;
+    }
+
     .is-list {
         overflow-y: scroll;
         height: 100vh;
         position: relative;
         scroll-behavior: smooth;
+        color: #444;
+        
     }
 
     .boxed {
@@ -205,5 +317,15 @@
 
     .notes-list {
         padding: 0 5px 0 10px !important;
+    }
+
+    .note-active {
+        background: #f5f5f5;
+    }
+
+    .btn-focus {
+        background: #a0cfff !important;
+        color: #fff !important;
+
     }
 </style>

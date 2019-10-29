@@ -284,6 +284,7 @@
                         }
                     }
                 }
+                
                 if (this.sideNote) {
                     data["$addToSet"] = {
                         meta: {
@@ -292,7 +293,7 @@
                         }
                     }
                 }
-                this.$db.update({
+                this.$db.notes.update({
                     _id: this.id
                 }, data, function () {});
                 this.sideNote = '';
@@ -309,7 +310,7 @@
                     layout: this.editingLayout
                 }
                 // }
-                this.$db.update({
+                this.$db.notes.update({
                     _id: this.id
                 }, data, function () {});
                 this.sideNote = '';
@@ -328,7 +329,7 @@
             fetch() {
                 var self = this;
                 if (this.$configs.get('id')) {
-                    this.$db.findOne({
+                    this.$db.notes.findOne({
                         _id: this.$configs.get('id')
                     }, function (err, doc) {
                         self.content = doc.content
@@ -355,7 +356,7 @@
                 var title = this.content.substring(0, 30);
                 if (!this.id) {
                     if (!this.content) return;
-                    this.$db.insert({
+                    this.$db.notes.insert({
                         title: title,
                         content: this.content,
                         createdAt: new Date(),
@@ -365,7 +366,7 @@
                     });
                     this.fetch()
                 } else {
-                    this.$db.update({
+                    this.$db.notes.update({
                         _id: this.id
                     }, {
                         $set: {
@@ -383,7 +384,7 @@
             appendContent(input) {
                 console.log('setting notes', input)
                 var content = this.content + "\n" + input;
-                // this.$db.update({
+                // this.$db.notes.update({
                 //     _id: this.id
                 // }, {
                 //     $set: {
@@ -392,7 +393,7 @@
                 //         updatedAt: new Date()
                 //     }
                 // }, function () {});
-                this.$db.update({
+                this.$db.notes.update({
                     _id: this.id
                 }, {
                     // $set: {
@@ -425,7 +426,7 @@
              */
             tagRemote(tag) {
                 // this.cats.splice(this.cats.indexOf(tag), 1);
-                this.$db.update({
+                this.$db.notes.update({
                     _id: this.id
                 }, {
                     $pull: {
@@ -507,15 +508,15 @@
         white-space: pre-line;
     }
 
-    [contenteditable="true"],
-    [contenteditable="true"]:active,
-    [contenteditable="true"]:focus {
-        border: none;
-        outline: none;
-        white-space: pre;
-        white-space: pre-line;
-        padding: 20px;
-    }
+        [contenteditable="true"],
+        [contenteditable="true"]:active,
+        [contenteditable="true"]:focus {
+            border: none;
+            outline: none;
+            white-space: pre;
+            white-space: pre-line;
+            padding: 20px;
+        }
 
     /** */
     /*  */
