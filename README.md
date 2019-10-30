@@ -1,5 +1,35 @@
-# dent-emr
+# Emad Note: Note-taking app for busy minds
+---
+This is work-in-progress Note-taking app, built to help us taking editorial notes and write articles for Medevel.com 
 
+![Screenshot](screenshot.png)
+
+
+## Features
+- Note taking
+- Attachment editor URL, Notes with #tags support
+- Task taking
+- Note search
+
+
+## Incoming Features
+- Layout support
+- Note export
+- Markdown support
+- Code snippets 
+- Attachments Search
+- Command supports
+
+## Planned 
+- Git support
+- Dropbox support
+- Firebase support
+
+--- 
+
+## Development Note
+
+This project is built using Vue, Electron and NeDB. 
 > An electron-vue project
 
 #### Build Setup
@@ -22,59 +52,3 @@ npm test
 npm run lint
 
 ```
-
----
-
-Editor
-
-#{Note} Value
-
-
-Commands
-
-
-#set key:value
-
-
-___
-
-Search Docs
-
-#find {keyword}
-
-
-____________________
-
-Set Document Tag 
-
-Command (editor)
-
-#tag set tag1,tag2,tag2 
-
-[db:cats]
-
-________________________-
-#layout 
-
-ex.
-#layout introduction; features; open source vs commercial; conclusion
-
-_______________________________
-
-Shortcuts
-
-ctrl+f/ cmd+f => focus Command input
-ctrl+i/ cmd+i => toggle sidebar
-ctrl+;/ cmd+; => toggle meta editor
-ctrl+n/ cmd+n => new note 
-ctrl+] / cmd+] => lists view
-
-
-
-
-
-
-
-
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[8fae476](https://github.com/SimulatedGREG/electron-vue/tree/8fae4763e9d225d3691b627e83b9e09b56f6c935) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
