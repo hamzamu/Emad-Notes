@@ -3,13 +3,14 @@
         <el-row :gutter="12" class="is-fh disable-selectx disable-scroll">
             <!-- Toolbar -->
             <el-row :gutter="24" style="padding:0px;border-bottom:1px solid #eee;">
+
                 <el-col :span="5" class="notes-listx" style="text-align:center;">
                     <el-input placeholder="Search note" style="width:98%;margin:10px 15px" v-model="searchInput"
                         @change="searchDocs"></el-input>
                 </el-col>
                 <!--  -->
                 <el-col :span="6">
-                    <el-button-group style="margin:10px;">
+                    <el-button-group style="margin:10px;" v-if="id">
 
                         <el-button size="small" :class="{'btn-focus' : currentView == 'editor'}" round
                             @click="currentView = 'editor' ; noteSet('id',{currentView:'editor'})">Editor
@@ -36,7 +37,8 @@
                     <!-- <i class="el-icon-star-off"></i>
                     <i class="el-icon-set-up"></i>
                     <i class="el-icon-open"></i> -->
-                    <el-input v-if="currentView == 'tasks'" placeholder="New task" v-model="newTask" @keyup.enter.native="newTaskSet"></el-input>
+                    <el-input v-if="currentView == 'tasks'" placeholder="New task" v-model="newTask"
+                        @keyup.enter.native="newTaskSet"></el-input>
 
                 </el-col>
                 <!--  -->
@@ -50,6 +52,10 @@
             <!--  -->
             <!-- List: Notesss -->
             <el-col :span="5" class="has-sidebar disable-select is-list" style="padding:0;">
+
+                <el-card v-if="!docs || !docs.length">
+                    There is no notes yet, Create some notes.
+                </el-card>
                 <el-row :gutter="12" class="is-sharp boxed is-clickable" v-for="(i,index) in docs" v-bind:key="index"
                     style="margin:0;padding:0;">
                     <!--  -->
@@ -71,6 +77,7 @@
             </el-col>
             <!-- Editor -->
             <el-col :span="19" class="is-list" style="position:relative;">
+                
                 <editor v-show="currentView == 'editor'" v-bind:doc="doc"></editor>
                 <attachments v-show="currentView == 'attach'" v-bind:doc="doc" v-bind:id="id"></attachments>
                 <tasks v-show="currentView == 'tasks'" v-bind:doc="doc" v-bind:id="id"></tasks>
@@ -120,7 +127,7 @@
                 id: '',
                 currentView: '',
                 searchInput: '',
-                newTask:''
+                newTask: ''
             }
         },
         watch: {
@@ -170,11 +177,15 @@
                         self.doc = doc;
                         self.notes = doc.notes;
                         self.currentView = doc.currentView;
+                        self.id = doc._id
                     });
                 } else {
                     this.$db.notes.findOne({}, {
                         updatedAt: -1
                     }, function (err, doc) {
+                        if (!doc || !doc._id) {
+                            return
+                        }
                         self.$configs.set('id', doc._id)
                         self.content = doc.content
                         self.tags = doc.tags
@@ -245,12 +256,22 @@
                 this.doc = ''
                 this.id = ''
             },
-            newTaskSet(){
-                console.log(this.id,this.newTask)
+            newTaskSet() {
+                console.log(this.id, this.newTask)
                 // Emad.docBatch(this.id, 'tasks', [{task:this.newTask, createdAt: new Date()}])
-                Emad.attachInsert(this.id, {type:'task', isTask:true, text:this.newTask, createdAt: new Date(),isAttach:false, isExtra:true})
+                Emad.attachInsert(this.id, {
+                    type: 'task',
+                    isTask: true,
+                    text: this.newTask,
+                    createdAt: new Date(),
+                    isAttach: false,
+                    isExtra: true
+                })
                 this.newTask = '';
                 this.getNote(this.id)
+            },
+            setNoteId(id){
+                this.id = id;
             }
         },
         created() {
@@ -260,11 +281,16 @@
         },
         mounted() {
             // Fetch All docs
+
+            this.currentView = 'editor'
             EventBus.$on('fetchDocs', this.fetch)
             // Fetch Doc 
             EventBus.$on('fetchDoc', this.getNote)
             // New Editor
             EventBus.$on('newNote', this.newNote)
+            //
+            EventBus.$on('setDoc',this.setNoteId)
+            // EventBus.$on('newNote', this.newNote)
             // Refresh
             this.fetch()
             this.getNote()
@@ -276,7 +302,7 @@
         background: #eee;
     }
 
-    .is-clickable{
+    .is-clickable {
         cursor: pointer;
     }
 
@@ -286,7 +312,7 @@
         position: relative;
         scroll-behavior: smooth;
         color: #444;
-        
+
     }
 
     .boxed {

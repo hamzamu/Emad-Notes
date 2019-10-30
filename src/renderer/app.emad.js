@@ -133,7 +133,7 @@ emad.noteNew = (note) => {
  */
 
 emad.noteUpdate = (id, data) => {
-    console.log('noteUpdate', id, data)
+    // console.log('noteUpdate', id, data)
     data.updatedAt = new Date()
     db.notes.update({
         _id: id
@@ -231,9 +231,22 @@ emad.attachRemove = (id) => {
 /**
  * DEMO
  */
-db.attach.find({}, function (err, doc) {
-    console.log('app.emad log:', doc)
-})
+//
+// db.notes.remove({})
+// db.attach.remove({})
+
+// db.notes.remove({}, { multi: true }, function (err, numRemoved) {
+// });
+// db.attach.remove({}, { multi: true }, function (err, numRemoved) {
+// });
+
+
+// db.notes.find({}, function (err, doc) {
+//     console.log('app.emad log:', doc)
+//     if(doc.length == 0){
+//         Emad.docNew({title:'New Note', subtitle: "New Note", createdAt: new Date(), content: 'New Note'})
+//     }
+// })
 
 
 

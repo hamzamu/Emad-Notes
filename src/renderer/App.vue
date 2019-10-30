@@ -383,7 +383,7 @@
                 this.tags = ''
             },
             fetch() {
-                console.log('note fetch')
+                // console.log('note fetch')
                 var self = this
                 this.$db.notes.find({}, function (err, docs) {
                     if (docs.length > 0) {

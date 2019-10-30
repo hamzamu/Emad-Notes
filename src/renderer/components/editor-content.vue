@@ -44,7 +44,7 @@
         computed: {},
         methods: {
             editorUpdate() {
-                console.log('editorUpdate',this.id)
+                // console.log('editorUpdate',this.id)
                 var content = this.content;
                 // var title = this.content.substring(0, 30);
                 var title = this.content.split('\n')[0].trim()
@@ -67,7 +67,7 @@
                     })
                 }
                 // mainPage
-                EventBus.$emit('docFetch', this.id)
+                EventBus.$emit('setDoc', this.id)
                 // App
                 EventBus.$emit('docRefresh');
             }
