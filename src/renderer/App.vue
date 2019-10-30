@@ -66,9 +66,10 @@
                         <i class="el-icon-plus"></i>
                     </el-menu-item> -->
                     <!--  -->
-                    <el-menu-item index="3" @click="$router.push('/help')">
+                    <!-- HELP -->
+                    <!-- <el-menu-item index="3" @click="$router.push('/help')">
                         <i class="el-icon-warning-outline"></i>
-                    </el-menu-item>
+                    </el-menu-item> -->
                     <!--  -->
                     <!-- <el-menu-item index="2" @click="$router.push('tags')">
                       <i class="el-icon-news"></i>
