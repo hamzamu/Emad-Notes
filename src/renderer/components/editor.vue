@@ -2,10 +2,10 @@
     <div>
         <div class="statusbar">
             <div class="tag-group">
-                <el-tag size="small"><b>Words:</b> {{count.words}}</el-tag>
-                <el-tag size="small"><b>Sentences:</b>{{count.sentences}}</el-tag>
-                <el-tag size="small"><b>Paragraphs:</b> {{count.paragraphs}}</el-tag>
-                <el-tag size="small"><b>Caracters:</b> {{count.characters}}</el-tag>
+                <el-tag size="small" effect="plain"><b>Words:</b> {{count.words}}</el-tag>
+                <el-tag size="small" effect="plain"><b>Sentences:</b>{{count.sentences}}</el-tag>
+                <el-tag size="small" effect="plain"><b>Paragraphs:</b> {{count.paragraphs}}</el-tag>
+                <el-tag size="small" effect="plain"><b>Caracters:</b> {{count.characters}}</el-tag>
             </div>
         </div>
         <!--  -->

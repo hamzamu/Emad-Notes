@@ -1,5 +1,16 @@
 <template>
+
     <div class="editor-box" style="">
+        <!--  -->
+        <div class="statusbar">
+            <div class="tag-group">
+                <el-tag size="small" effect="plain"><b>Words:</b> {{count.words}}</el-tag>
+                <el-tag size="small" effect="plain"><b>Sentences:</b>{{count.sentences}}</el-tag>
+                <el-tag size="small" effect="plain"><b>Paragraphs:</b> {{count.paragraphs}}</el-tag>
+                <el-tag size="small" effect="plain"><b>Caracters:</b> {{count.characters}}</el-tag>
+            </div>
+        </div>
+        <!--  -->
         <div class="has-border-bt padding-5">
             <!-- <h2>{{doc.title}}</h2> -->
             <el-tag :key="tag" v-for="tag in doc.tags" closable :disable-transitions="true" @close="tagRemote(tag)">
@@ -14,6 +25,7 @@
             </el-button>
         </div>
         <div class="editor-content">
+            <vue-countable :text="content" :elementId="'editorBox'" @change="change"></vue-countable>
             <contenteditable id="editorBox editable" ref="editor" tag="div" :contenteditable="isEditable"
                 v-model="content" :noNL="false" @input="editorUpdate" @keydown.esc.native="exit" />
         </div>
@@ -38,6 +50,7 @@
                 note: '',
                 content: '',
                 isEditable: true,
+                count: '',
             }
         },
         watch: {
@@ -56,6 +69,9 @@
         },
         computed: {},
         methods: {
+            change(e) {
+                this.count = e;
+            },
             focus() {
                 this.$nextTick(() => {
                     this.$refs.editor.$el.focus()

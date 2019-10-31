@@ -31,21 +31,17 @@
                     </el-button-group>
                 </el-col>
                 <!--  -->
-                <el-col :span="6"
-                    style="margin:10px;text-align:right;padding-top:0px;font-size:22px;font-weight:normal;color:#555;">
+                <el-col class="topbar-fix" :span="6">
                     <!-- ADD EVENTS -->
-                    <!-- <i class="el-icon-star-off"></i>
-                    <i class="el-icon-set-up"></i>
-                    <i class="el-icon-open"></i> -->
-                    <el-input v-if="currentView == 'tasks'" placeholder="New task" v-model="newTask"
-                        @keyup.enter.native="newTaskSet"></el-input>
-
+                    <!-- <i class="el-icon-star-off"></i> -->
+                    <!-- <el-button icon="el-icon-star-off" circle @click="pin(id)"></el-button> -->
+                    <!-- <i class="el-icon-set-up"></i> -->
+                    <!-- <i class="el-icon-open"></i> -->
                 </el-col>
                 <!--  -->
-                <el-col :span="6"
-                    style="margin:10px;text-align:right;padding-top:10px;font-size:22px;font-weight:normal;color:#555;">
+                <el-col :span="6" class="topbar-fix">
                     <!-- Add Event -->
-                    <!-- <i class="el-icon-delete"></i> -->
+                     <el-button icon="el-icon-delete" circle @click="remove(id)"></el-button>
 
                 </el-col>
             </el-row>
@@ -70,8 +66,7 @@
                     </el-col>
                     <!-- <el-col :span="12" style="float:right;text-align:right;">
                         <el-button @click="viewNote(i._id)" icon="el-icon-edit" type="text" circle></el-button>
-                        <el-button type="text" @click="pin(i._id,i.pinned)" icon="el-icon-check" circle></el-button>
-                        <el-button type="text" @click="remove(i._id)" icon="el-icon-delete" circle></el-button>
+  
                     </el-col> -->
                 </el-row>
             </el-col>
@@ -122,7 +117,6 @@
                 id: '',
                 currentView: '',
                 searchInput: '',
-                newTask: ''
             }
         },
         watch: {
@@ -226,20 +220,6 @@
                 this.$configs.set('id', '')
                 this.doc = ''
                 this.id = ''
-            },
-            newTaskSet() {
-                console.log(this.id, this.newTask)
-                // Emad.docBatch(this.id, 'tasks', [{task:this.newTask, createdAt: new Date()}])
-                Emad.attachInsert(this.id, {
-                    type: 'task',
-                    isTask: true,
-                    text: this.newTask,
-                    createdAt: new Date(),
-                    isAttach: false,
-                    isExtra: true
-                })
-                this.newTask = '';
-                this.getNote(this.id)
             },
 
         },

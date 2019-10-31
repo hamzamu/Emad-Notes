@@ -1,10 +1,11 @@
 <template>
     <div class="editor-container">
-        <!-- <p>Tasks
-        </p> -->
-        <br />
+        <p> <strong>Tasks</strong>5</p>
+        <div>
+            <el-input placeholder="New task" v-model="newTask" @keyup.enter.native="newTaskSet"></el-input>
+        </div>
         <div v-if="!tasks || !tasks.length">
-            There is no tasks.
+            <p>There is no tasks.</p>
         </div>
         <el-row v-for="(task, i) in tasks" v-bind:key="i" class="task">
             <el-col :span="12">
@@ -39,16 +40,16 @@
         props: ['doc', 'id'],
         data() {
             return {
-                tasks: ''
+                tasks: '',
+                newTask: ''
             }
         },
-        computed: {
-        },
+        computed: {},
         watch: {
             doc() {
                 if (this.doc._id) {
                     this.fetchTasks()
-                }else{
+                } else {
                     this.tasks = ''
                 }
             },
@@ -60,9 +61,11 @@
                     doc: this.doc._id,
                     isTask: true
                 }, (err, docs) => {
-                    var docs = _.orderBy(docs, ['checked','updatedAt'], ['desc']);
+                    var docs = _.orderBy(docs, ['checked', 'updatedAt'], ['desc']);
                     self.tasks = docs
                 })
+            },
+            taskNew() {
             },
             taskRm(id) {
                 Emad.attachRemove(id)
@@ -70,18 +73,31 @@
             },
             taskSet(id, data) {
                 console.log(id, data)
-                Emad.attachUpdate(id,data)
+                Emad.attachUpdate(id, data)
                 EventBus.$emit('fetchDoc', this.doc._id)
-            }
+            },
+            newTaskSet() {
+                // Emad.docBatch(this.id, 'tasks', [{task:this.newTask, createdAt: new Date()}])
+                Emad.attachInsert(this.doc._id, {
+                    type: 'task',
+                    isTask: true,
+                    text: this.newTask,
+                    createdAt: new Date(),
+                    isAttach: false,
+                    isExtra: true
+                })
+                this.newTask = '';
+                EventBus.$emit('fetchDoc', this.doc._id)
+                // this.getNote(this.id)
+            },
         },
-        created() {
-        }
+        created() {}
     }
 </script>
 <style>
-.is-checked-task{
-    font-style: oblique;
-      text-decoration: line-through;
-    color: #888;
-}
+    .is-checked-task {
+        font-style: oblique;
+        text-decoration: line-through;
+        color: #888;
+    }
 </style>
