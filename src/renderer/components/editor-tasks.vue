@@ -52,6 +52,8 @@
             doc() {
                 if (this.doc._id) {
                     this.fetchTasks()
+                }else{
+                    this.tasks = ''
                 }
             },
         },

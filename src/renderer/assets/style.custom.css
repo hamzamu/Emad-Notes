@@ -1,0 +1,268 @@
+/* 
+    = Custom Styles
+*/
+
+
+.command {
+    border-radius: 0px;
+}
+
+html,
+body {
+    overflow: hidden;
+    scroll-behavior: smooth;
+}
+
+html {
+    /* overflow: scroll; */
+    overflow-y: hidden;
+    overflow-x: hidden;
+    /* position: fixed;  */
+    scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    /* make scrollbar transparent */
+}
+
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    background: #fff;
+    scroll-behavior: smooth;
+}
+
+/* Sidebar */
+
+
+.sidebar {
+    height: 100% !important;
+    border-right: 1px solid #ccc;
+}
+
+/* App */
+
+.statusbar-shadow {
+    width: 100%;
+    height: 28px;
+    position: fixed;
+    bottom: 100px;
+    z-index: 1009;
+    padding: 10px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/*  */
+.statusbar {
+    width: 100%;
+    height: 28px;
+    position: fixed;
+    bottom: 60px;
+    z-index: 1009;
+    padding: 10px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    text-transform: uppercase;
+}
+
+/*  */
+/* .el-tag {
+    margin: 3px 4px 2px;
+    display: inline-block;
+} */
+
+/*  */
+/*  */
+.meta-logger {
+    width: 100%;
+    display: block;
+    height: auto;
+    min-height: 40vh;
+    position: fixed;
+    right: 0;
+    bottom: 60px;
+    background-color: rgba(39, 39, 39, 0.8);
+    z-index: 1009;
+}
+
+.meta-logger-content {
+    width: 90%;
+    margin-left: 40px;
+    padding-left: 25px;
+}
+
+
+#commands {
+    z-index: 1100;
+}
+
+.is-hidden {
+    display: none;
+}
+
+.sysButton {
+    padding: 5px;
+    font-size: 16px;
+}
+
+/*  */
+.fixedFooter {
+    padding: 5px;
+    border-top: 1px solid #ccc;
+    background: #fff;
+    position: absolute;
+    width: 100%;
+    bottom: 100px;
+    left: 0;
+    z-index: 1009;
+}
+
+
+/*  */
+.toolbar {
+    display: block;
+    width: 100%;
+    height: 60px;
+    z-index: 1004;
+    line-height: 50px;
+    background: #fff;
+    padding-top: 5px;
+    /* background-image: linear-gradient(top, red 0%, bottom 100%); */
+}
+
+.tools {
+    width: 48%;
+    display: block;
+    float: left;
+    padding: 5px;
+    margin-right: 5px;
+}
+
+.appActions {
+    width: 48%;
+    text-align: right;
+    float: right;
+    padding-right: 10px;
+}
+
+
+/* 
+    editor-container
+ */
+.editor-container {
+    padding: 10px;
+}
+
+.task {
+    border: 1px solid #eee;
+    padding: 20px 10px 20px 20px;
+}
+
+/* Backgrounds */
+
+.bg {
+    background: #fff;
+}
+
+
+.bg-black {
+    background: #232323 !important;
+    color: #fff;
+}
+
+/* utilities */
+
+.is-sharp {
+    border-radius: 0px;
+}
+
+.row-padding {
+    padding-top: 5px;
+}
+
+.has-text-right {
+    text-align: right;
+}
+
+.small {
+    font-size: 12px !important;
+}
+
+.disable-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.disable-scroll {
+    overflow: hidden;
+}
+
+.has-border-bt {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 7px;
+}
+
+
+
+.is-hidden {
+    display: none;
+}
+
+
+.el-input__inner {
+    border-radius: 0px !important;
+}
+
+/* 
+Editor: CSS
+== editor.content.vue
+*/
+
+/*  */
+.editor-box {
+    height: 95vh;
+    /* min-height: 100%; */
+    /* height: auto; */
+    width: 100%;
+    overflow-y: scroll !important;
+    overflow: auto;
+    /* background: #000; */
+    /* border: 1px solid #eee; */
+    /* background:#eee; */
+}
+
+.editor-content {
+    width: 95%;
+    /* padding: 20px 40px 20px 30px; */
+    line-height: 2.1em;
+    overflow-y: scroll !important;
+    overflow: auto;
+    color: #222;
+    font-size: 90%;
+    outline: none;
+    white-space: pre;
+    white-space: pre-line;
+}
+
+[contenteditable="true"],
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus {
+    border: none;
+    outline: none;
+    white-space: pre;
+    white-space: pre-line;
+    padding: 20px;
+}

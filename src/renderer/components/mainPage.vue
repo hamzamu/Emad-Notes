@@ -77,10 +77,9 @@
             </el-col>
             <!-- Editor -->
             <el-col :span="19" class="is-list" style="position:relative;">
-                
-                <editor v-show="currentView == 'editor'" v-bind:doc="doc"></editor>
-                <attachments v-show="currentView == 'attach'" v-bind:doc="doc" v-bind:id="id"></attachments>
-                <tasks v-show="currentView == 'tasks'" v-bind:doc="doc" v-bind:id="id"></tasks>
+                <editor v-show="currentView == 'editor'" v-bind:doc="doc" v-bind:id="doc._id"></editor>
+                <attachments v-show="currentView == 'attach'" v-bind:doc="doc"></attachments>
+                <tasks v-show="currentView == 'tasks'" v-bind:doc="doc"></tasks>
                 <!-- Navigation -->
                 <br />
             </el-col>
@@ -120,10 +119,6 @@
                 notes: null,
                 selected: '',
                 doc: '',
-                attachments: '',
-                tags: '',
-                props: '',
-                meta: '',
                 id: '',
                 currentView: '',
                 searchInput: '',
@@ -136,11 +131,6 @@
                     this.currentView = 'editor'
                 }
             },
-            // searchInput: ()=>{
-            //     if(this.searchInput){
-            //         console.log('search',this.searchInput)
-            //     }
-            // }
 
         },
         computed: {},
@@ -158,25 +148,16 @@
             getNote(id) {
                 var self = this;
                 // this.$configs.get('id')
-                var id = this.$configs.get('id');
+                // var id = this.$configs.get('id');
+                // console.log(id,this.$configs.get('id'))
                 if (id) {
-                    // console.log('s',id)
                     this.$db.notes.findOne({
                         _id: id
                     }, function (err, doc) {
-                        self.content = doc.content
-                        self.tags = doc.tags
-                        self.props = doc.props
-                        self.meta = {
-                            createdAt: doc.createdAt,
-                            updatedAt: doc.updatedAt
-                        }
-                        self.cats = doc.cats;
-                        self.atthments = doc.meta;
-                        // self.layout = doc.layout;
+                        self.$configs.set('id', doc._id)
                         self.doc = doc;
                         self.notes = doc.notes;
-                        self.currentView = doc.currentView;
+                        self.currentView = doc.currentView || 'editor';
                         self.id = doc._id
                     });
                 } else {
@@ -187,16 +168,6 @@
                             return
                         }
                         self.$configs.set('id', doc._id)
-                        self.content = doc.content
-                        self.tags = doc.tags
-                        self.props = doc.props
-                        self.meta = {
-                            createdAt: doc.createdAt,
-                            updatedAt: doc.updatedAt
-                        }
-                        self.cats = doc.cats;
-                        self.atthments = doc.meta;
-                        // self.layout = doc.layout;
                         self.doc = doc;
                         self.notes = doc.notes;
                         self.currentView = doc.currentView || 'editor'
@@ -270,9 +241,7 @@
                 this.newTask = '';
                 this.getNote(this.id)
             },
-            setNoteId(id){
-                this.id = id;
-            }
+
         },
         created() {
             this.$configs.set('id', '')
@@ -289,7 +258,7 @@
             // New Editor
             EventBus.$on('newNote', this.newNote)
             //
-            EventBus.$on('setDoc',this.setNoteId)
+
             // EventBus.$on('newNote', this.newNote)
             // Refresh
             this.fetch()

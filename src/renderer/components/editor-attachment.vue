@@ -1,10 +1,7 @@
 <template>
   <div class="attactments-editor">
     <!-- back to editor/ change View: attachment browser -->
-    <!-- <br />
-    {{doc.title}}
-    <br /> -->
-
+    Attachments for: <strong>{{doc.title}}</strong><br />
     <!-- Tags -->
     <div class="has-border-bt">
       <h4>Tags</h4>
@@ -18,18 +15,11 @@
       <!--  -->
       <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag
       </el-button>
- 
     </div>
-
-     <h4> Attachments</h4>
-     <p>
-       Add URLS, Text and use #hashtags 
-     </p>
-    <!-- <el-divider content-position="left">
-      <i class="el-icon-paperclip"></i>
-      Attachments
-    </el-divider> -->
-    <!-- FORM* input (Text/ Data)-->
+    <h4> Attachments</h4>
+    <p>
+      Add URLS, Text and use #hashtags
+    </p>
     <div label="Activity form">
       <br />
       <el-input type="textarea" v-model="attachment" @keyup.enter.native="attach"></el-input>
@@ -38,41 +28,32 @@
     <!-- Attachments -->
     <!-- <el-divider content-position="left">
       <i class="el-icon-wallet"></i>
-
       <el-button size="small" round>Tasks</el-button>
       <el-button size="small" round>Attachments</el-button>
       <el-button size="small" round>Notes</el-button>
       <el-button size="small" round>Layout</el-button>
       <el-button size="small" round>Memos</el-button>
     </el-divider> -->
-
-
     <el-row :gutter="12">
       <el-col :span="8" v-for="(att, index) in attachs" :key="index" class="attach-box">
         <el-card shadow="hover" class="box-card" v-bind:style="{ backgroundImage: 'url(' + att.image + ')' }" style="">
-         
           <div class="" style="text-align:right;overflow:hidden;">
             <strong style="float:left;">{{att.updatedAt | moment("from", "now")}}</strong>
             <i class="el-icon-edit"></i>
             <i class="el-icon-remove" @click="attachRemove(att._id)"></i>
           </div>
-          <br/>
-
-
-
+          <br />
           <p class="" style="padding:10px;background:#fff;">
-          {{att.title}} <br/>
-          <!-- {{att.image}} -->
-          {{att.text}}
+            {{att.title}} <br />
+            <!-- {{att.image}} -->
+            {{att.text}}
           </p>
           <p>
             <el-tag v-for="(tag,index) in att.tags" v-bind:key="index">{{tag}}</el-tag>
           </p>
         </el-card>
-
       </el-col>
     </el-row>
-
     <!-- 
     <el-row v-for="(att, index) in attachs" :key="index">
       <el-divider content-position="left">
@@ -90,13 +71,9 @@
         </p>
       </el-col>
     </el-row> -->
-
-
-
     <!-- Notes -->
     <br />
     <br />
-
   </div>
 </template>
 <style>
@@ -104,12 +81,10 @@
     padding: 20px 30px;
     overflow-y: scroll;
     scroll-behavior: smooth;
-
   }
 
   .attach-box {
     margin: 0 0 20px 0;
-
   }
 
   .box-card {
@@ -151,7 +126,9 @@
     watch: {
       doc() {
         if (this.doc._id) {
-          this.attachmentsFetch()
+          this.attachmentsFetch(this.doc._id)
+        }else{
+          this.attachs = '';
         }
       }
     },
@@ -159,10 +136,13 @@
       /**
        * Fetch Attachments: 
        */
-      attachmentsFetch() {
+      attachmentsFetch(id) {
         var self = this;
         self.$db.attach.find({
-          doc: this.doc._id, $not: {isExtra:true}
+          doc: id,
+          $not: {
+            isExtra: true
+          }
         }, (err, docs) => {
           var docs = _.orderBy(docs, ['updatedAt'], ['desc']);
           self.attachs = docs
@@ -174,11 +154,13 @@
           Emad.attachInsert(this.doc._id, {
             text: i
           });
-          Emad.noteUpdate(this.doc._id,{updatedAt:new Date()})
+          Emad.noteUpdate(this.doc._id, {
+            updatedAt: new Date()
+          })
           this.attachmentsFetch()
-          setTimeout(()=>{
+          setTimeout(() => {
             this.attachmentsFetch()
-          },2000)
+          }, 2000)
           EventBus.$emit('docRefresh');
           this.attachment = ""
         }

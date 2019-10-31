@@ -29,9 +29,9 @@ function createWindow() {
     useContentSize: true,
     width: 1560,
     height: 870,
-    frame: true,
+    frame: false,
     title: 'Emad',
-    resizable: true,
+    resizable: false,
     // OLD
     // icon: path.join(__static, '/icons/note.png')
     // NEW WORKING

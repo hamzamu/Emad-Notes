@@ -53,7 +53,7 @@
         <!-- height:100vh; border: 0px solid #eee;padding:0;margin:0; -->
         <el-container class="disable-scroll" style="" id="app">
             <el-aside width="65px" v-if="isSideOpen">
-                <el-menu style="height:100vh;" class="sidebar">
+                <el-menu style="height:100vh;" class="sidebar bg-black">
                     <el-menu-item index="1" @click="$router.push('/')">
                         <i class="el-icon-notebook-2"></i>
                     </el-menu-item>
@@ -92,6 +92,7 @@
             </el-aside>
             <!-- Container -->
             <el-container>
+                <!-- Custom Logging View -->
                 <div class="meta-logger" v-if="isMetaOpen">
                     <div class="meta-logger-content">
                         DATA
@@ -102,17 +103,14 @@
                    -->
                 <!-- Auro complete tags -->
                 <div class="statusbar-shadow">
-                    <!-- {{$config}} -->
-                    <!-- {{$configs}} -->
+
                     <div class="tag-group" v-if="tags">
                         <el-tag v-for="(i,index) in tags" v-bind:key="index" type="danger">{{i}}</el-tag>
-                        <!-- <el-tag><b>Words:</b></el-tag> -->
+
                     </div>
                 </div>
-                <!-- <div style="text-align: right; font-size: 12px; padding:0px 10px 0 10px;border-bottom:1px solid #fff;">
-                  </div> -->
+
                 <el-main class="disable-scroll" style="padding:0;margin:0px;background:#fff; ">
-                    <!-- {{$configs}} -->
                     <router-view :config="config" :docs="docs" :input="input"></router-view>
                 </el-main>
                 <!--  -->
@@ -147,17 +145,6 @@
     import {
         Emad
     } from './app.emad.js'
-    // TESTING
-    // import axios from 'axios';
-    // import got from 'got';
-    // (async () => {
-    //   try {
-    //     const response = await got('medevel.com');
-    //     // console.log(response.body);
-    //   } catch (error) {
-    //     // console.log(error.response.body);
-    //   }
-    // })();
     export default {
         name: 'app',
         data() {
@@ -305,7 +292,8 @@
                 remote.getCurrentWindow().setFullScreen(v)
             },
             /**
-             * Command Parser
+             * Commands
+             * WIP*
              */
             submitNote(e) {
                 var self = this;
@@ -469,196 +457,6 @@
     }
 </script>
 <style>
-    .is-hidden {
-        display: none;
-    }
-
-    .fixedFooter {
-        padding: 5px;
-        border-top: 1px solid #ccc;
-        background: #fff;
-        position: absolute;
-        width: 100%;
-        bottom: 100px;
-        left: 0;
-        z-index: 1009;
-    }
-
-    .el-input__inner {
-        border-radius: 0px !important;
-    }
-
-    .command {
-        border-radius: 0px;
-    }
-
-    html,
-    body {
-        overflow: hidden;
-        scroll-behavior: smooth;
-    }
-
-    html {
-        /* overflow: scroll; */
-        overflow-y: hidden;
-        overflow-x: hidden;
-        /* position: fixed;  */
-        scroll-behavior: smooth;
-    }
-
-    ::-webkit-scrollbar {
-        width: 0px;
-        background: transparent;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        /* make scrollbar transparent */
-    }
-
-    .bg {
-        background: #fff;
-    }
-
-    body {
-        padding: 0;
-        margin: 0;
-        font-family: "Helvetica Neue", Helvetica;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        background: #fff;
-        scroll-behavior: smooth;
-    }
-
-    .statusbar-shadow {
-        width: 100%;
-        height: 28px;
-        position: fixed;
-        bottom: 100px;
-        z-index: 1009;
-        padding: 10px;
-        font-size: 13px;
-        font-family: Arial, sans-serif;
-        font-family: 'Open Sans', sans-serif;
-    }
-
-    /*  */
-    .statusbar {
-        width: 100%;
-        height: 28px;
-        position: fixed;
-        bottom: 60px;
-        z-index: 1009;
-        padding: 10px;
-        font-size: 13px;
-        font-family: Arial, sans-serif;
-        font-family: 'Open Sans', sans-serif;
-        text-transform: uppercase;
-    }
-
-    /*  */
-    .el-tag {
-        margin: 3px 4px 2px;
-        display: inline-block;
-    }
-
-    /*  */
-    /*  */
-    .meta-logger {
-        width: 100%;
-        display: block;
-        height: auto;
-        min-height: 40vh;
-        position: fixed;
-        right: 0;
-        bottom: 60px;
-        background-color: rgba(39, 39, 39, 0.8);
-        z-index: 1009;
-    }
-
-    .meta-logger-content {
-        width: 90%;
-        margin-left: 40px;
-        padding-left: 25px;
-    }
-
-    .sidebar {
-        height: 100% !important;
-    }
-
-    #commands {
-        z-index: 1100;
-    }
-
-    .is-hidden {
-        display: none;
-    }
-
-    .sysButton {
-        padding: 5px;
-        font-size: 16px;
-    }
-
-    .is-sharp {
-        border-radius: 0px;
-    }
-
-    .toolbar {
-        display: block;
-        width: 100%;
-        height: 60px;
-        z-index: 1004;
-        line-height: 50px;
-        background: #fff;
-        padding-top: 5px;
-        /* background-image: linear-gradient(top, red 0%, bottom 100%); */
-    }
-
-    .tools {
-        width: 48%;
-        display: block;
-        float: left;
-        padding: 5px;
-        margin-right: 5px;
-    }
-
-    .appActions {
-        width: 48%;
-        text-align: right;
-        float: right;
-        padding-right: 10px;
-    }
-
-    .small {
-        font-size: 12px !important;
-    }
-
-    .disable-select {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    .disable-scroll {
-        overflow: hidden;
-    }
-    .has-border-bt{
-        border-bottom: 1px solid #eee;
-        padding-bottom: 7px;
-    }
-    /* 
-        editor-container
-     */
-     .editor-container{
-         padding:10px;
-     }
-     .task{
-         border: 1px solid #eee;
-         padding:20px 10px 20px 20px;
-     }
-     .row-padding{
-         padding-top: 5px;
-     }
-     .has-text-right{
-         text-align: right;
-     }
+@import url('./assets/style.custom.css');
+  
 </style>
