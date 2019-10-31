@@ -61,7 +61,6 @@
                     isTask: true
                 }, (err, docs) => {
                     var docs = _.orderBy(docs, ['checked','updatedAt'], ['desc']);
-                    console.log('tasks',docs)
                     self.tasks = docs
                 })
             },
