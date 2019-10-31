@@ -1,7 +1,6 @@
 <template>
     <div class="editor-box" style="">
         <div class="editor-content">
-            {{id}}
             <contenteditable id="editorBox" ref="editor" tag="div" :contenteditable="isEditable" v-model="content"
                 :noNL="false" @input="editorUpdate" @keydown.esc.native="exit" />
         </div>
