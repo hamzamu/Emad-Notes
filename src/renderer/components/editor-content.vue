@@ -1,12 +1,8 @@
 <template>
     <div class="editor-box" style="">
-
-        
-
         <div class="has-border-bt padding-5">
-            <h2>{{doc.title}}</h2>
-            
-            <el-tag :key="tag" v-for="tag in doc.cats" closable :disable-transitions="true" @close="tagRemote(tag)">
+            <!-- <h2>{{doc.title}}</h2> -->
+            <el-tag :key="tag" v-for="tag in doc.tags" closable :disable-transitions="true" @close="tagRemote(tag)">
                 {{tag}}
             </el-tag>
             <!--  -->
@@ -17,11 +13,9 @@
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag
             </el-button>
         </div>
-
-
         <div class="editor-content">
-            <contenteditable id="editorBox" ref="editor" tag="div" :contenteditable="isEditable" v-model="content"
-                :noNL="false" @input="editorUpdate" @keydown.esc.native="exit" />
+            <contenteditable id="editorBox editable" ref="editor" tag="div" :contenteditable="isEditable"
+                v-model="content" :noNL="false" @input="editorUpdate" @keydown.esc.native="exit" />
         </div>
     </div>
 </template>
@@ -44,23 +38,31 @@
                 note: '',
                 content: '',
                 isEditable: true,
-
             }
         },
         watch: {
             doc: function () {
                 if (!this.doc) {
                     this.content = "New note"
+                    this.focus()
                 }
             },
             id() {
                 if (this.id) {
                     this.content = this.doc.content
+                    this.focus()
                 }
             }
         },
         computed: {},
         methods: {
+            focus() {
+                this.$nextTick(() => {
+                    this.$refs.editor.$el.focus()
+                    document.execCommand('selectAll', false, null);
+                    document.getSelection().collapseToEnd();
+                });
+            },
             editorUpdate() {
                 var content = this.content;
                 var title = this.content.split('\n')[0].trim()
@@ -84,15 +86,13 @@
                 // Refresh All Notes.
                 EventBus.$emit('docRefresh');
             },
-
             tagRemote(tag) {
                 var self = this;
-                // this.cats.splice(this.cats.indexOf(tag), 1);
                 this.$db.notes.update({
                     _id: self.doc._id
                 }, {
                     $pull: {
-                        cats: tag
+                        tags: tag
                     }
                 }, {}, function () {});
                 EventBus.$emit('fetchDoc', this.doc._id)
@@ -108,24 +108,15 @@
                 if (!inputValue) {
                     return
                 }
-                console.log('tag', inputValue, this.doc._id)
-                Emad.docBatch(this.doc._id, 'cats', [inputValue])
+                Emad.docBatch(this.doc._id, 'tags', [inputValue])
                 this.inputVisible = false;
                 this.inputValue = '';
                 EventBus.$emit('fetchDoc', this.doc._id)
             },
         },
-        created() {
-
-
-        },
-        mounted() {
-
-
-
-        }
+        created() {},
+        mounted() {}
     }
 </script>
 <style>
-
 </style>

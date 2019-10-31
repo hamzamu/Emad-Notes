@@ -274,3 +274,48 @@ Editor: CSS
     padding: 20px;
     outline: 1px solid red;
 }
+
+
+#editable {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  #editable:after {
+    content: "|";
+    -webkit-animation-name: blink;
+            animation-name: blink;
+    -webkit-animation-duration: 0.9s;
+            animation-duration: 0.9s;
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease;
+            animation-timing-function: ease;
+  }
+  
+  #editable.is-focused {
+    background: pink;
+  }
+  #editable.is-focused:after {
+    content: '';
+  }
+  
+  @-webkit-keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  
