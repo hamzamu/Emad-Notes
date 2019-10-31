@@ -1,29 +1,9 @@
 <template>
   <div class="attactments-editor">
-    <!-- back to editor/ change View: attachment browser -->
-    Attachments for: <strong>{{doc.title}}</strong><br />
-    <!-- Tags -->
-    <div class="has-border-bt">
-      <h4>Tags</h4>
-      <el-tag :key="tag" v-for="tag in doc.cats" closable :disable-transitions="true" @close="tagRemote(tag)">
-        {{tag}}
-      </el-tag>
-      <!--  -->
-      <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini"
-        @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm" style="width:120px;">
-      </el-input>
-      <!--  -->
-      <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag
-      </el-button>
-    </div>
-    <h4> Attachments</h4>
-    <p>
-      Add URLS, Text and use #hashtags
-    </p>
+    <!-- back to editor/ change View: attachment browser -->    
+    <h4>  Attachments for: <strong>{{doc.title}}</strong><br /></h4>
     <div label="Activity form">
-      <br />
-      <el-input type="textarea" v-model="attachment" @keyup.enter.native="attach"></el-input>
-      <br /> <br />
+      <el-input type="textarea" v-model="attachment" @keyup.enter.native="attach" placeholder=" Add URLS, Text and use #hashtags"></el-input>
     </div>
     <!-- Attachments -->
     <!-- <el-divider content-position="left">
@@ -82,11 +62,9 @@
     overflow-y: scroll;
     scroll-behavior: smooth;
   }
-
   .attach-box {
     margin: 0 0 20px 0;
   }
-
   .box-card {
     height: 100% !important;
     min-height: 300px;
@@ -117,8 +95,6 @@
     props: ['cats', 'tags', 'doc', 'id'],
     data() {
       return {
-        inputVisible: false,
-        inputValue: '',
         attachment: '',
         attachs: ''
       }
@@ -168,36 +144,7 @@
       attachRemove(id) {
         Emad.attachRemove(id)
         this.attachmentsFetch()
-      },
-      tagRemote(tag) {
-        var self = this;
-        // this.cats.splice(this.cats.indexOf(tag), 1);
-        this.$db.notes.update({
-          _id: self.doc._id
-        }, {
-          $pull: {
-            cats: tag
-          }
-        }, {}, function () {});
-        EventBus.$emit('fetchDoc', this.doc._id)
-      },
-      showInput() {
-        this.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-      handleInputConfirm() {
-        let inputValue = this.inputValue;
-        if (!inputValue) {
-          return
-        }
-        console.log('tag', inputValue, this.doc._id)
-        Emad.docBatch(this.doc._id, 'cats', [inputValue])
-        this.inputVisible = false;
-        this.inputValue = '';
-        EventBus.$emit('fetchDoc', this.doc._id)
-      },
+      }
     },
     mounted() {},
     created() {}

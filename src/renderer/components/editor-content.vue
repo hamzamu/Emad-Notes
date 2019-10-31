@@ -1,5 +1,24 @@
 <template>
     <div class="editor-box" style="">
+
+        
+
+        <div class="has-border-bt padding-5">
+            <h2>{{doc.title}}</h2>
+            
+            <el-tag :key="tag" v-for="tag in doc.cats" closable :disable-transitions="true" @close="tagRemote(tag)">
+                {{tag}}
+            </el-tag>
+            <!--  -->
+            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini"
+                @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm" style="width:120px;">
+            </el-input>
+            <!--  -->
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag
+            </el-button>
+        </div>
+
+
         <div class="editor-content">
             <contenteditable id="editorBox" ref="editor" tag="div" :contenteditable="isEditable" v-model="content"
                 :noNL="false" @input="editorUpdate" @keydown.esc.native="exit" />
@@ -17,13 +36,15 @@
         EventBus
     } from '../eventBus.js'
     export default {
-        props: ['doc','id'],
+        props: ['doc', 'id'],
         data() {
             return {
+                inputVisible: false,
+                inputValue: '',
                 note: '',
                 content: '',
                 isEditable: true,
-             
+
             }
         },
         watch: {
@@ -32,14 +53,13 @@
                     this.content = "New note"
                 }
             },
-            id(){
-                if(this.id){
+            id() {
+                if (this.id) {
                     this.content = this.doc.content
                 }
             }
         },
-        computed: {
-        },
+        computed: {},
         methods: {
             editorUpdate() {
                 var content = this.content;
@@ -63,16 +83,46 @@
                 }
                 // Refresh All Notes.
                 EventBus.$emit('docRefresh');
-            }
+            },
+
+            tagRemote(tag) {
+                var self = this;
+                // this.cats.splice(this.cats.indexOf(tag), 1);
+                this.$db.notes.update({
+                    _id: self.doc._id
+                }, {
+                    $pull: {
+                        cats: tag
+                    }
+                }, {}, function () {});
+                EventBus.$emit('fetchDoc', this.doc._id)
+            },
+            showInput() {
+                this.inputVisible = true;
+                this.$nextTick(_ => {
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
+            handleInputConfirm() {
+                let inputValue = this.inputValue;
+                if (!inputValue) {
+                    return
+                }
+                console.log('tag', inputValue, this.doc._id)
+                Emad.docBatch(this.doc._id, 'cats', [inputValue])
+                this.inputVisible = false;
+                this.inputValue = '';
+                EventBus.$emit('fetchDoc', this.doc._id)
+            },
         },
         created() {
-             
+
 
         },
         mounted() {
 
-           
-            
+
+
         }
     }
 </script>

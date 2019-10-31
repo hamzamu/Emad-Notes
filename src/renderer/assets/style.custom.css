@@ -221,6 +221,12 @@ body {
     display: none;
 }
 
+.padding-5{
+    padding: 7px;
+}
+
+/*  */
+
 
 .el-input__inner {
     border-radius: 0px !important;
@@ -242,6 +248,7 @@ Editor: CSS
     /* background: #000; */
     /* border: 1px solid #eee; */
     /* background:#eee; */
+    outline: 1px solid #ddd;
 }
 
 .editor-content {
@@ -265,4 +272,5 @@ Editor: CSS
     white-space: pre;
     white-space: pre-line;
     padding: 20px;
+    outline: 1px solid red;
 }

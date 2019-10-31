@@ -3,19 +3,15 @@
         <!-- <p>Tasks
         </p> -->
         <br />
-        <!-- <div v-if=" ">
+        <div v-if="!tasks || !tasks.length">
             There is no tasks.
-        </div> -->
+        </div>
         <el-row v-for="(task, i) in tasks" v-bind:key="i" class="task">
             <el-col :span="12">
-
                 <i v-if="!task.checked" class="el-icon-circle-check"
                     @click="taskSet(task._id,{checked:true,updatedAt: new Date()})"
                     style="font-size:20px; margin:8px 4px 0 4px;"></i>
-
-
                 <span :class="{'is-checked-task' : task.checked == true}">{{task.text}}</span><br />
-               
                 <span
                     style="margin:20px 10px; padding:10px;"><strong><small>{{ task.createdAt | moment("from", "now") }}</small></strong></span>
             </el-col>
@@ -65,6 +61,7 @@
                     isTask: true
                 }, (err, docs) => {
                     var docs = _.orderBy(docs, ['checked','updatedAt'], ['desc']);
+                    console.log('tasks',docs)
                     self.tasks = docs
                 })
             },
