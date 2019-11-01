@@ -1,31 +1,31 @@
 <template>
-    <div>
+    <div class="is-fh">
         <el-row :gutter="12">
             <el-col :span="24" style="padding:40px;">
-                <el-input placeholder="Passkey" v-model="input" style="width:400px;"></el-input>
-                <br/>
-                <br/>
-                <el-switch v-model="value1" active-text="Pay by month" inactive-text="Pay by year">
-                </el-switch>
-                <br/>
-                <br/>
-                <el-switch v-model="value2"  active-text="Pay by month" inactive-text="Pay by year" active-color="#13ce66" inactive-color="#ff4949">
-                </el-switch>
-                <br/>
-                <br/>
-                <el-button>Save</el-button>
+               
+                  <h3>Backup your Database</h3>
+                  <br/>
+                  Emad-Notes uses a flat-file database, You can copy them for backup, However, drag-and-drop new files or deleting the database files without a backup will result in deleting all notes.
+                  <span>Please Backup the Database files first</span>
+                  <br/>
+                  <br/>
+                <el-button @click="openDir()">Open Database Directory</el-button>
             </el-col>
         </el-row>
     </div>
 </template>
-
-
 <script>
+import path from 'path'
+import { remote } from 'electron';
+const {shell} = require('electron') 
   export default {
     data () {
       return {
-        value1: true,
-        value2: true
+      }
+    },
+    methods:{
+      openDir(){
+        shell.openItem(path.join(remote.app.getPath('userData'))+'/dbs/')
       }
     }
   }

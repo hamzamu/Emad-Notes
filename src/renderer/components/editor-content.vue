@@ -73,11 +73,11 @@
                 this.count = e;
             },
             focus() {
-                this.$nextTick(() => {
-                    this.$refs.editor.$el.focus()
-                    document.execCommand('selectAll', false, null);
-                    document.getSelection().collapseToEnd();
-                });
+                // this.$nextTick(() => {
+                //     this.$refs.editor.$el.focus()
+                //     document.execCommand('selectAll', false, null);
+                //     document.getSelection().collapseToEnd();
+                // });
             },
             editorUpdate() {
                 var content = this.content;

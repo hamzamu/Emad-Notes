@@ -77,9 +77,9 @@
                     <!-- <el-menu-item index="3" @click="$router.push('search')">
                       <i class="el-icon-search"></i>
                     </el-menu-item> -->
-                    <!-- <el-menu-item index="3" @click="$router.push('settings')">
-                    <i class="el-icon-setting"></i>
-                </el-menu-item> -->
+                    <el-menu-item index="3" @click="$router.push('settings')">
+                        <i class="el-icon-setting"></i>
+                    </el-menu-item>
                     <!-- toggle -->
                     <!-- <el-menu-item index="3" @click="isSideOpen = !isSideOpen" class="is-hiddenx">
                     <i class="el-icon-back"></i>
@@ -407,7 +407,7 @@
             var self = this;
             this.fetch()
             EventBus.$on('docRefresh', this.fetch)
-            EventBus.$on('searchDocs',this.find)
+            EventBus.$on('searchDocs', this.find)
             // EventBus.$emit('docRefresh');
             // 
             // EventBus.$emit('fetchDocs');
@@ -457,6 +457,5 @@
     }
 </script>
 <style>
-@import url('./assets/style.custom.css');
-  
+    @import url('./assets/style.custom.css');
 </style>
