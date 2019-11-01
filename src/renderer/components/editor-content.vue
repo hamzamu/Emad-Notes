@@ -27,7 +27,7 @@
         <div class="editor-content">
             <vue-countable :text="content" :elementId="'editorBox'" @change="change"></vue-countable>
             <contenteditable id="editorBox editable" ref="editor" tag="div" :contenteditable="isEditable"
-                v-model="content" :noNL="false" @input="editorUpdate" @keydown.esc.native="exit" />
+                v-model="content" :noNL="false" @keyup.native="editorUpdate" @keydown.esc.native="exit" />
         </div>
     </div>
 </template>
@@ -73,11 +73,11 @@
                 this.count = e;
             },
             focus() {
-                // this.$nextTick(() => {
-                //     this.$refs.editor.$el.focus()
-                //     document.execCommand('selectAll', false, null);
-                //     document.getSelection().collapseToEnd();
-                // });
+                this.$nextTick(() => {
+                    this.$refs.editor.$el.focus()
+                    document.execCommand('selectAll', false, null);
+                    document.getSelection().collapseToEnd();
+                });
             },
             editorUpdate() {
                 var content = this.content;
