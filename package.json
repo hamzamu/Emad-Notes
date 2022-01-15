@@ -62,7 +62,7 @@
     "got": "^9.6.0",
     "lodash": "^4.17.14",
     "lowdb": "^1.0.0",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "nedb": "^1.8.0",
     "vue": "^2.5.16",
     "vue-contenteditable": "^1.0.2",
